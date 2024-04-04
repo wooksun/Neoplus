@@ -1,0 +1,23 @@
+※ String insertQuery = "SELECT * FROM file_board.post ORDER BY num desc"; ※
+-> 여기서 'file_board.post'는 file_board=테이블, .post=스키마를 의미한다. 
+-> 따라서 
+SELECT(조회) *(모든것) 
+FROM(어디서?) file_board.post(file_blard테이블의.post스키마에서) 
+ORDER BY(조회 정렬) num(찾고자하는 값) desc(내림차순으로)가 되겠다.
+
+<Statement와 PrepateStatement>
+1. Statement
+String name = "홍길동";
+String mmo = "메모 테스트";
+String priority = "1";
+String sql = String.format("insert into tblMemo values(memoSeq.nextval, '%s', '%s', default, %s)", name, memo, priorty);
+=> Statement는 이런식으로 매개변수를 줘야 함
+
+2. PrepareStatement
+sql = "insert into tbiMemo values(memoSeq.nextval, ?, ?, default)";
+pstmt = conn.prepareStatement(sql);
+
+pstmt.setString(1, name);
+pstmt.setString(2, memo);
+pstmt.setString(3, priority);
+=> PrepareStatement는 매개변수 값 대입 + 매개변수 유효화 처리
