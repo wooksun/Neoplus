@@ -1,0 +1,24 @@
+< INNER JOIN 문제 >
+
+1. 기수(CNO), 이름(FNM)을 출력하는 쿼리문 작성
+SELECT CNO AS 기수, FNM AS 이름
+FROM tn_entsch_info A
+INNER JOIN tn_stdnt_info B
+ON A.entsch_uno = B.entsch_uno
+WHERE B.FNM = '최진우';
+
+2. 기수(CNO), 이름(FNM), 교번(STDNT_NO)를 출력하는 쿼리문 작성
+SELECT A.CNO AS 기수, B.STDNT_NO AS 교번, B.FNM AS 이름 -> 기수, 교번, 이름의 별칭을 작성해준다.
+FROM tn_entsch_info A -> 어디서(FROM)? tn_entsch_info 테이블 -> tn_entsch_info 테이블을 A라고 칭함
+INNER JOIN tn_stdnt_info B -> INNER JOIN tn_stdnt_info 테이블 -> tn_stdnt_info 테이블을 B라고 칭함
+ON A.entsch_uno = B.entsch_uno -> ON을 사용하여 두 테이블의 공통된 열을 기반으로 조건 지정
+WHERE A.CNO = 327; -> 기수, 이름, 교번의 공통점은 기수 번호가 같이 때문에 A 테이블의 CNO=327번을 조건 한다.
+
+3. 기수(CNO), 이름(FNM), 교번(STDNT_NO)을 출력하되, 교번을 기준으로 내림차순 출력하는 쿼리문 작성
+SELECT A.CNO AS 기수, B.STDNT_NO AS 교번, B.FNM AS 이름 
+FROM tn_entsch_info A
+INNER JOIN tn_stdnt_info B
+ON A.entsch_uno = B.entsch_uno
+WHERE A.CNO = 327 ORDER BY STDNT_NO DESC; -> 2번과 동일하지만 마지막에 A.CNO = 327 조건 이후
+-> ORDER BY = 조회 정렬 -> 을 사용하여 ORDER BY STDNT_NO(교번) DESC(내림차순); 을 해준다.
+
