@@ -1,0 +1,41 @@
+-- 김도현 교수가 담당하고 있는 학생의 이름을 출력하시오
+-- 담당지도교수별 학생 정보 TN_CHGPRF_STDNT_INFO
+-- 교수정보 TN_SKLSTF_MASTR
+-- 학생정보 TN_STDNT_INFO
+select B.FNM as 교수명, C.FNM as 학생명
+from tn_chgprf_stdnt_info A
+inner join tn_sklstf_mastr B
+on A.sklstf_uno = B.sklstf_uno 
+inner join tn_stdnt_info C
+on A.stdnt_uno = C.stdnt_uno 
+where B.fnm = '김도현';
+
+
+-- 김도현 교수가 담당하고 있는 학생의 기수와 학생명을 출력하시오
+-- 담당지도교수별 학생 정보 TN_CHGPRF_STDNT_INFO
+-- 교수정보 TN_SKLSTF_MASTR
+-- 학생정보 TN_STDNT_INFO
+-- 입교정보 TN_ENTSCH_INFO
+
+select B.FNM as 교수명, C.FNM as 학생명, D.CNO as 기수
+from tn_chgprf_stdnt_info A
+inner join tn_sklstf_mastr B on A.sklstf_uno = B.sklstf_uno 
+inner join tn_stdnt_info  C on A.stdnt_uno = C.stdnt_uno 
+inner join tn_entsch_info D on A.entsch_uno = D.entsch_uno 
+where B.fnm = '김도현';
+
+-- 위 쿼리를 콤마 쿼리로 사용하기
+select 
+	B.FNM as 교수명
+	, C.FNM as 학생명
+	, D.CNO as 기수
+from
+	tn_chgprf_stdnt_info A
+	, tn_sklstf_mastr B
+	, tn_stdnt_info C
+	, tn_entsch_info D
+where  
+	A.sklstf_uno = B.sklstf_uno 
+	and A.stdnt_uno = C.stdnt_uno 
+	and A.entsch_uno = D.entsch_uno 
+	and B.fnm = '김도현';
