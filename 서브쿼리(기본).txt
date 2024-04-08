@@ -1,0 +1,47 @@
+-- 서브쿼리 select 
+--SELECT 학생이름,
+--       (  SELECT 학과.학과이름
+--            FROM 학과
+--           WHERE 학과.학과ID = 학생.학생ID ) AS 학과이름
+--  FROM 학생
+-- WHERE 학생이름 = '홍길동' ;
+
+-- 아래의 식을 참고하여 서브쿼리를 활용해 최진우 학생의 계급을 출력하기
+select
+	ST.FNM
+	,ST.GRDTB_CLSF_CODE
+from
+	TN_STDNT_INFO ST
+where
+	ST.STDNT_UNO = 'STD43707';
+
+SELECT CD.CODE_NM, CD.CODE_ID, CD.CODE FROM TC_CMMN_DETAIL CD WHERE CD.CODE_ID='MN002';
+
+select CD.CODE_NM as 계급 from tc_cmmn_detail CD where CD.CODE='CL08'; -- 경무관
+
+-- ST.FNM = 학생이름, CD.CODE_NM = 계급 / tn_stdnt_info ST, TC_CMMN_DETAIL CD
+select ST.FNM as 학생이름, 
+(
+	select CD.CODE_NM
+	from tc_cmmn_detail CD
+	where ST.grdtb_clsf_code = CD.CODE
+) as 계급
+from tn_stdnt_info ST
+where ST.fnm = '최진우';
+-- 서브쿼리 기본 문법에 맞게 대입해보기
+-- 학생이름이 먼저 사용되도록 ST.FNM을 먼저 SELET 함
+-- 다음 조회될 CD.CODE_NM을 기입
+-- 조회 될 테이블 tc_cmmn_detail을 기입
+-- (중요) ST 테이블과 CD 테이블의 교집합이 되는 부분이 ST.grdtb_clsf_code와 CD.CODE 부분이기 때문에
+-- 조건을 ST.grdtb_clsf_code = CD.CODE로 건다
+-- 서브쿼리를 빠져나간 후, ()가 CD의 내용이기 때문에 AS 계급으로 별칭을 지어줌
+-- 여기서부터는 ST.FNM AS 학생이름을 처리해야 하기 때문에, FROM tn_stdnt_info ST로 지정
+-- where ST.FNM='최진우';로 찾고자 하는 학생의 이름을 조회하면 tn_stdnt_info의 이름과
+-- ST.grdtb_clsf_code = CD.CODE 조건을 만족하는 계급이 출력된다.
+
+-- ============ INNER JOIN
+select ST.FNM as 학생이름, CD.CODE_NM as 계급
+from tn_stdnt_info ST
+inner join tc_cmmn_detail CD on ST.grdtb_clsf_code = CD.CODE
+where ST.fnm = '최진우';
+-- ============ INNER JOIN
