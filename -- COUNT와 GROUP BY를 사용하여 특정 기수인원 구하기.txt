@@ -1,0 +1,25 @@
+-- COUNT와 GROUP BY를 사용하여 327기의 인원수를 구하기.
+SELECT CNO AS 기수, COUNT(A.CNO) AS 기수 인원 // 조회 CNO AS 기수(별칭), (GROUP BY에 사용될 COUNT 선언) -> COUNT(A.CNO) 
+-> FROM 절에서 사용되는 TN_ENTSCH_INFO 테이블 A를 지정 후, A 테이블 안에 속하는 CNO 칼럼을 지정
+FROM TN_ENTSCH_INFO A // FROM(어디서?) TN_ENTSCH_INFO 테이블에서 -> TN_ENTSCH_INFO를 A로 대체
+INNER JOIN TN_STDNT_INFO B // ★ INNER JOIN을 사용하여 FROM 절 테이블과 비교 -> GROUP BY 사용하여 COUNT의 개수를 셀 때, 
+-> TN_ENTSCH_INFO 테이블만 사용하게 되면 327이라는 기수가 모두 출력되지 않기 때문에, INNER JOIN을 사용하여 TN_STDNT_INFO 테이블까지 
+-> 조회할 수 있도록 하여 327 기수의 모든 COUNT를 구할 수 있다.
+ON A.entsch_uno = B.entsch_uno // INNER JOIN 조건
+WHERE A.CNO = 327 // A.CNO 기수를 327로 조건
+GROUP BY CNO; // GROUP BY CNO; -> GROUP BY는 WHERE절 처럼 조건을 걸지 않고, 단순하게 사용되는 칼럼만 사용한다.
+
+< 잘못된 예 >
+SELECT CNO AS 기수, COUNT(CNO) AS 기수 인원
+FROM TN_ENTSCH_INFO A
+GROUP BY A.CNO = 327;
+-> 기수   기수인원
+->   1        137
+->   327     4
+
+=> SELECT CNO AS 기수 FROM TN_ENTSCH_INFO A WHERE A.CNO = 327; 
+=> 기수
+=> 327 (x4)
+
+이렇듯 TN_ENTSCH_INFO의 CNO = 327은 4개가 전부이다. 때문에 327기 전체 학생 수를 조회하려면 INNER JOIN을 활용하여 TN_STDNT_INFO 테이블과의
+비교를 통해 교집합 된 칼럼을 통하여 추출된 327기의 총 학생 수를 구할 수 있다.
