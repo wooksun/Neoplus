@@ -1,0 +1,22 @@
+package cpa.biz.lm.rm.dao;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import cpa.biz.lm.rm.model.BassCycleEstbsVO;
+import cpa.cmm.service.impl.EgovComAbstractDAO;
+
+@Repository("BassCycleEstbsDAO")
+public class BassCycleEstbsDAO extends EgovComAbstractDAO{
+
+	public List<BassCycleEstbsVO> selectBassList(BassCycleEstbsVO bassCycleEstbsVO) {
+		System.out.println("외않돼2");
+		return selectList("BassCycleEstbsDAO.selectBassList", bassCycleEstbsVO);
+	}
+
+	public int selectBassListCnt(BassCycleEstbsVO bassCycleEstbsVO) {
+		return (Integer)selectOne("BassCycleEstbsDAO.selectBassListCnt", bassCycleEstbsVO);
+	}
+
+}

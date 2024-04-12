@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="BassCycleEstbsDAO">
+
+	<!-- 게시판목록조회 -->
+	<select id="selectBassList" resultType="cpa.biz.lm.rm.model.BassCycleEstbsVO">
+			(SELECT /* selectBbsList - 게시판목록조회 */
+			       A.BBS_UNO           /* 게시판고유번호 */
+			     , A.BBS_TY_CODE       /* 게시판유형코드 */
+			     , A.UPEND_EXPSR_AT    /* 상단노출여부 */
+			     , A.CL_CODE           /* 분류코드 */
+			     , A.NTT_SJ            /* 게시물제목 */
+			     , A.NTT_CN            /* 게시물내용 */
+			     , A.ATCHMNFL_UNO      /* 첨부파일고유번호 */
+			     , TO_CHAR(TO_DATETIME(A.SCHDL_DE,'YYYYMMDD'), 'YYYY.MM.DD') AS SCHDL_DE      	   /* 일정 */
+			     , A.RDCNT             /* 조회수 */
+			     , A.DELETE_AT         /* 삭제여부 */
+			     , TO_CHAR(TO_DATETIME(A.REGIST_DT,'YYYYMMDDHH24MISS'), 'YYYY.MM.DD') AS REGIST_DT         /* 등록일시 */
+			     , A.REGISTER          /* 등록자 */
+			     , CASE WHEN SUBSTRING(A.REGISTER, 0, 3) = 'SKL'
+		     				THEN (SELECT FNM FROM TN_SKLSTF_MASTR WHERE SKLSTF_UNO = A.REGISTER)
+		         		ELSE (SELECT FNM FROM TN_STDNT_INFO WHERE STDNT_UNO = A.REGISTER)
+		       		END AS REGISTER_NM        /* 등록자명 */
+			     , TO_CHAR(TO_DATETIME(A.UPDT_DT,'YYYYMMDDHH24MISS'), 'YYYY.MM.DD') AS UPDT_DT         /* 등록일시 */
+			     , A.UPDUSR            /* 수정자 */
+			     , CASE WHEN SUBSTRING(A.UPDUSR, 0, 3) = 'SKL'
+			     			THEN (SELECT FNM FROM TN_SKLSTF_MASTR WHERE SKLSTF_UNO = A.UPDUSR)
+			         	ELSE (SELECT FNM FROM TN_STDNT_INFO WHERE STDNT_UNO = A.UPDUSR)
+			        END AS UPDUSR_NM        /* 수정자명 */
+			  FROM TN_BBS A
+			 WHERE NVL(A.DELETE_AT, 'N')  = 'N'
+			   AND A.UPEND_EXPSR_AT = 'N'
+			 ORDER BY A.REGIST_DT DESC)
+	</select>
+	<!-- 게시판목록조회 -->
+
+	<!-- 게시판 조회 -->
+	<select id="selectBassListCnt" parameterType="cpa.biz.lm.rm.model.BassCycleEstbsVO" resultType="java.lang.Integer">
+		SELECT /* selectBbsListCnt - 게시판조회 count */
+		      COUNT(A.BBS_UNO)
+		FROM TN_BBS A
+	   WHERE NVL(A.DELETE_AT, 'N')  = 'N'
+		 AND A.BBS_TY_CODE = #{bbsTyCode}
+	   	 <include refid="searchCnd"/>
+	</select>
+	<!-- 게시판 조회 -->
+
+	<!-- 검색조건  -->
+	<sql id="searchCnd">
+		<if test="searchClCode != null and searchClCode != ''">
+			AND A.CL_CODE = #{searchClCode}
+		</if>
+		<if test="searchType != null and searchType != ''">
+			<if test="searchKwrd != null and searchKwrd != ''">
+				<choose>
+					<when test="searchType eq 'tit'">
+						AND A.NTT_SJ LIKE '%' || #{searchKwrd} || '%'
+					</when>
+					<when test="searchType eq 'cn'">
+						AND A.NTT_CN LIKE '%' || #{searchKwrd} || '%'
+					</when>
+					<when test="searchType eq 'reg'">
+						AND (CASE WHEN SUBSTRING(A.REGISTER, 0, 3) = 'SKL'
+			     				 THEN (SELECT FNM FROM TN_SKLSTF_MASTR WHERE SKLSTF_UNO = A.REGISTER)
+			         		 ELSE (SELECT FNM FROM TN_STDNT_INFO WHERE STDNT_UNO = A.REGISTER)
+			       			  END) LIKE '%' || #{searchKwrd} || '%'
+					</when>
+					<otherwise>
+					</otherwise>
+				</choose>
+			</if>
+		</if>
+	</sql>
+	<!-- 검색조건 -->
+
+</mapper>

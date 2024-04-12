@@ -1,0 +1,165 @@
+<!-- JSTL 추가 -->
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>BassCycleEstbs</title>
+</head>
+
+<script>
+
+//게시판조회
+$(function(){
+	fnBbsList(1);
+});
+
+/* 게시판 조회 */
+function fnBbsList(pageNo) {
+	if ($.isNotEmpty($("#searchKwrd").val())) {
+		if ($.isEmpty($("#searchType").val())) {
+			alert("조회조건은(는) 필수 항목입니다.");
+			$("#searchType").focus();
+			return;
+		}
+	}
+
+	if ($.isEmpty(pageNo)) {
+		pageNo = 1;
+	}
+
+	$("#pageIndex").val(pageNo);
+
+	var url = "/lm/rm/searchBassList.do";
+	var type = "POST";
+	var param = {
+			"pageIndex" : pageNo,
+			"bbsTyCode" : cfnEmpty($("#bbsTyCode").val()),
+    		"searchClCode" : cfnEmpty($("#searchClCode").val()),
+    		"searchType" : cfnEmpty($("#searchType").val()),
+    		"searchKwrd" : cfnEmpty($("#searchKwrd").val())
+	};
+
+	cfnCallAjax(url, type, true, param, function (response) {
+		console.log("response===>"+response);
+	});
+}
+
+</script>
+
+<div class="content">
+	<div style="border: none; width: 100%; height: 100%;">
+		<div class=""
+			style="
+				background-color: #005fb8;
+				color: white;
+				height: 50px;
+				display: flex;
+				align-items: center;
+				font-style:normal;
+				font-size:20px;
+				font-weight: bold;
+				padding-left: 20px;
+				">
+			<caption>자유 게시판</caption>
+		</div>
+
+		<!-- 조회 -->
+		<div class="schTopWrap">
+			<div class="schGroup type1">
+				<select id="searchCICode" name="searchCICode" title="조회 선택" class="sel">
+					<option>--전체--</option>
+					<option>일상생활</option>
+				</select>
+				<select id="searchCICode" name="searchCICode" title="조회 선택" class="sel">
+					<option>--전체--</option>
+					<option>제목</option>
+					<option>내용</option>
+					<option>작성자</option>
+				</select>
+				<input type="text" id=""searchKwrd" name="searchKwrd" title="input" maxlength="100" class="input w306">
+				<a href="*" class="btn btn_m w90 gr_btn">조회</a>
+			</div>
+		</div>
+
+		<!-- 등록 -->
+		<div class="btnTopWrap">
+			<div class="br">
+				<a class="btn btn_m w110 gb_btn wBtn">
+				<i class="stdIcon"></i>
+				등록
+				</a>
+			</div>
+		</div>
+
+		<!-- 게시판 List -->
+		<div class="conTop clearfix">
+				<table class="tableList type1">
+					<caption>게시판 목록 테이블</caption>
+					<colgroup>
+			            <col style="width:96px">
+		                <col style="width:auto">
+		                <col style="width:160px">
+		                <col style="width:160px">
+		                <col style="width:160px">
+		                <col style="width:96px">
+		        	</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">번호</th>
+							<th scope="col">제목</th>
+							<th scope="col">분류</th>
+							<th scope="col">작성자</th>
+							<th scope="col">작성일</th>
+							<th scope="col">조회수</th>
+						</tr>
+					</thead>
+				 	<tbody>
+						<tr>
+							<td>1</td>
+							<td>주</td>
+							<td>일상생활</td>
+							<td>통합어드민</td>
+							<td>2024.04.11</td>
+							<td>60</td>
+						</tr>
+
+						<tr>
+							<td>2</td>
+							<td>야</td>
+							<td>일상생활</td>
+							<td>통합어드민</td>
+							<td>2024.04.11</td>
+							<td>60</td>
+						</tr>
+
+						<tr>
+							<td>3</td>
+							<td>휴</td>
+							<td>일상생활</td>
+							<td>통합어드민</td>
+							<td>2024.04.11</td>
+							<td>60</td>
+						</tr>
+					</tbody>
+				</table>
+		</div>
+	</div>
+</div>
+
+<form name="bbsForm" id="bbsForm" action="" method="post" enctype="multipart/form-data">
+	<input type="hidden" id="bbsTyCode" name="bbsTyCode" value="<c:out value="${bbsTyCode}" />" />
+	<input type="hidden" id="bbsEditTy" name="bbsEditTy" value="" />
+	<input type="hidden" id="bbsUno" name="bbsUno" value="" />
+	<input type="hidden" id="upperMenuCode" name="upperMenuCode" value="<c:out value="${upperMenuCode}" />" />
+	<input type="hidden" id="menuCode" name="menuCode" value="<c:out value="${menuCode}" />" />
+	<input type="hidden" id="pageIndex" name="pageIndex" value="" />
+	<input type="hidden" id="frmSearchClCode" name="searchClCode" value="" />
+	<input type="hidden" id="frmSearchType" name="searchType" value="" />
+	<input type="hidden" id="frmSearchKwrd" name="searchKwrd" value="" />
+	<input type="hidden" id="frmSearchPageNo" name="searchPageNo" value="" />
+</form>
+
+</html>

@@ -1,0 +1,11 @@
+package cpa.biz.lm.rm.service;
+
+import java.util.Map;
+
+import cpa.biz.lm.rm.model.BassCycleEstbsVO;
+
+public interface BassCycleEstbsService {
+
+	Map<String, Object> selectBassList(BassCycleEstbsVO bassCycleEstbsVO);
+
+}

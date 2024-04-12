@@ -1,0 +1,37 @@
+package cpa.biz.lm.rm.service.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import cpa.biz.lm.rm.dao.BassCycleEstbsDAO;
+import cpa.biz.lm.rm.model.BassCycleEstbsVO;
+import cpa.biz.lm.rm.service.BassCycleEstbsService;
+import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
+
+@Service("BassCycleEstbsService")
+public class BassCycleEstbsServiceImpl extends EgovAbstractServiceImpl implements BassCycleEstbsService {
+
+	@Resource(name = "BassCycleEstbsDAO")
+    private BassCycleEstbsDAO bassCycleEstbsDao;
+
+	@Override
+	public Map<String, Object> selectBassList(BassCycleEstbsVO bassCycleEstbsVO) {
+
+		System.out.println("외않돼1");
+		List<BassCycleEstbsVO> list = bassCycleEstbsDao.selectBassList(bassCycleEstbsVO);
+		int cnt = bassCycleEstbsDao.selectBassListCnt(bassCycleEstbsVO);
+		System.out.println("외않돼3");
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		map.put("resultList", list);
+		map.put("resultCnt", cnt);
+
+		return map;
+	}
+
+}
