@@ -1,0 +1,39 @@
+/*  
+	null, undefined 처리
+	ex) cfnEmpty(null) -> ""
+*/
+function cfnEmpty(str) {
+	if ($.isEmpty(str)) {
+		str = "";
+	} else if ("NULL" == str) {
+		str = "";
+	} else if ("null" == str) {
+		str = "";
+	}
+	return str;
+}
+-> str은 빈 값이고, 만약 str이 NULL, null 값을 가지면 빈 값을 리턴하는 개념으로 이해.
+
+그렇다면 cfnEmpty가 실제로 사용되는 예를 보면
+
+게시글 목록에 출력된 게시글 중, 게시글 클릭 이벤트가 발생되었을 때 게시글 상세로 넘어가는 jsp의 script 코드에서 알 수 있다.
+if($.each(resultList, function(index, item){
+			htmlTag += '<tr onclick="fnDetail(\'' + cfnEmpty(item.bbsUno) + '\')">';
+			htmlTag += '    <td>' + cfnEmpty(item.pnum) + '</td>';
+			htmlTag += '    <td class="tal">' + cfnEmpty(item.nttSj) + '</td>';
+		    htmlTag += '    <td>' + cfnEmpty(item.clNm) + '</td>';	// 분류
+		    htmlTag += '    <td>' + cfnEmpty(item.registerNm) + '</td>';
+		    htmlTag += '    <td>' + cfnEmpty(item.registDt) + '</td>';
+		    htmlTag += '    <td>' + cfnEmpty(item.rdcnt) + '</td>';
+		    htmlTag += '</tr>';
+
+		    console.log("item.pnum"+item.pnum); // 값은 나옴, 클릭이 안됨
+		}));
+
+		$("#bbsTbl tbody").append(htmlTag);
+-> 여기서 cfnEmpty( )를 보면 item.ooo와 같이 사용되고 있다.
+-> 문제는 어떻게 동작되는 것이냐?
+-> 우선 cfnEmpty( )가 common.js에 선언되어 있기 때문에, 해당 script에서 가지는 item.ooo이란 값이 NULL, null인지 아닌지 비교하게 된다.
+-> 해당 값이 NULL, null이 아닌 실제 값이면 그 값을 출력한다.
+-> 만약 해당 값이 NULL, null이라면 common.js에 있는 코드에서 NULL, null을 인식하고 str = ""; 코드가 리턴되어 빈 값을 출력하게 된다.
+-> 결론은 cfnEmpty( )는 ( )안의 값을 비교하여 값이 실제 값이면 그 값을 리턴하고, NULL, null이면 조건문을 돌아 빈 값을 리턴한다.
