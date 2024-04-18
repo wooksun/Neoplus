@@ -1,0 +1,19 @@
+내가 만든 새로운 페이지는 GET 방식 처리를 하지 않았다.
+때문에 List(게시글 목록), Detail(게시글 상세), Edit(게시글 수정)을 거치는 과정에서 GET으로 받아오는 값이 없었다.
+GET으로 받아오는 값이 없기 때문에 ""이라는 값이 Controller에 넘어가게 되고, Controller는
+if ("".equals(bbsTyCode)) {
+	bbsTyCode = "BT01";
+} 라는 코드가 실행되어 계속해서 typeCode를 BT01이라는 값으로 바뀌게 되었다.
+
+내가 원하는 typeCode는 'BT02'다. 그렇다면 어떻게 해결해야 하는가?
+-> XML은 BBS_TY_CODE = #{bbsTyCode}로 실행하기 때문에 코드 수정이 불가하다.
+-> impl이나 service, DAO는 수정할 코드가 없고, Controller 또한 빈 값을 'BT01'로 바꾸어주는 
+코드이기 때문에 바꿀 내용이 없다.
+-> 중요한건 List, Detail, Edit 각 파일에 <form> 태그 내부에 있다.
+-> <input type="hidden" id="bbsTyCode" name="bbsTyCode" value='<c:out value="${bbsTyCode}"/>' />
+-> 위와 같이 value의 값을 GET으로 받아오는 코드가 아닌
+-> <input type="hidden" id="bbsTyCode" name="bbsTyCode" value="BT02" />
+-> value=" "의 값을 지정해줌으로써 우리가 원하는 게시글을 가져올 수 있다는 것이다.
+-> 왜냐하면 GET을 사용하지 않았기 때문에 value에 원하는 값을 포함시켜준다.
+-> 각 파일의 태그마다 value의 값을 변경해준다면 List가 BT02를 조회하게 되고, List의 값을 전달받는 Detail은
+Edit에게 이 값을 전달하게 되면서 수정이 정상적으로 작동하게 된다.
