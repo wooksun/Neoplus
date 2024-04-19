@@ -1,0 +1,24 @@
+<수정에서 취소버튼 시 리스트로 넘어가지 않고, 해당 게시글로 넘어가는 경로 구현하기>
+fnCancl()은 수정(Edit)에서 취소(btn)를 클릭하면 발생하는 함수
+함수가 실행되면 cfnPageMvmn("<c:url value'/ln/rm/bassCycleEstbsForm.do'/>", param);이 실행되어 목록(List)로 보여줬음
+-> 하지만, 수정(Edit)에서 취소 시, 수정하려 했던 해당 게시글로 돌아가도록 경로를 설정하고자 한다.
+
+우선 가장 중요하게 생각한 두가지는 1. '/lm/rm/bassDetailForm.do'로 이동 2. BBS_UNO(게시글 고유번호)가 같아야 함
+-> 1번 조건은 fnCancl() 함수에 cfnPageMvmn() 속 c:url 주소만 변경해주면 된다.
+
+2번 조건이 중요
+-> 우선 console로 param을 정의한 값과 그 속의 bbsuno 값을 알아보기 위해 console.log(param)와 console.log(param.bbsuno)를 찍어보았다.
+-> 취소 버튼을 클릭했을 때, 콘솔에선 'object Object'와 'undefined'가 떴다. 값이 넘어오지 않는 뜻이었다.
+-> function fnCancl(bbsuno)로 설정 후 시도해 보았지만, 콘솔의 결과는 같았다. 
+-> 수정(Edit)은 상세(Detial) 게시글에서 오기 때문에, Edit이 Detail로부터 받아오는 게시글 고유번호에 집중하게 되었다.
+-> cfnPageMvmn("<c:url value='/lm/rm/bassDetailForm.do'/>", param.bbsuno == fnDetail(bbsuno)); 로 수정해보았다.
+	-> 이렇게 실행 시 값은 불러오지 못하지만, Detail 페이지로 넘어가게 되었다.
+	-> 또한 삭제, 수정 버튼이 없고, 목록 버튼만 존재했다.
+※ fnCancl() 함수에서 사용하는 param의 값과 상세(Detail)에서 사용하는 fnDetail() 함수를 비교해보기 위해 fnDetail() 함수를 사용함
+-> Controller와 Service, ServiceImpl, XML 파일을 모두 보아도 취소 시 게시글 고유번호 값을 갖고 넘어가는 구현은 없었다.
+-> 때문에 뷰단의 script를 통해 값을 전달하고, 받아야겠다는 확신이 들었다.
+-> 자세히 보니 fncancl() 함수의 변수 선언에 bbsuno를 갖는게 없었다. -> 이것이 값을 받아오지 못하는 원인이라고 생각했다.
+-> var bbsUno = $("#bbsUno").val(); 을 추가해준다.
+-> cfnPageMvmn("<c:url value='/lm/rm/bassDetailForm.do'/>", param.bbsuno == fnDetail(bbsUno));로 변경 후 저장
+-> 최종적으로 게시글 수정에서 취소 버튼을 클릭하게되면, 게시글 목록(List)으로 넘어가는 것이 아닌, 수정하려했던 해당 게시글의 상세(Detail)
+페이지로 넘어가게되어 구상했던 기능을 성공적으로 완성했다.
