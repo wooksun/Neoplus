@@ -1,0 +1,31 @@
+<문제>
+교번(stdnt_no)이 32510101인 학생의 "이름"과 가지고 있는 "자격증명","자격증코드","가산점"을 출력
+select * from tn_quflcn_addpnt; /*자격증별 가산점 및 자격증명 테이블*/
+select * from tn_stdnt_quflcn_info; /*자격증 취득 학생 테이블*/
+select * from tn_stdnt_info; /*학생 테이블*/
+을 출력하시면 됩니다.
+
+<풀이>
+우선 "이름", "자격증명", "자격증코드", "가산점"을 select 한다.
+-> SELECT A.fnm as 이름, B.code_nm as 자격증명, B.quflcn_cl_code as 자격증코드, B.addpnt as 가산점
+
+다음은 from이다. 이름 외에 자격증관련 내용과 가산점은 모두 B에 기재되어 있기 때문에 이름 컬럼을 가진
+tn_stdnt_info 테이블을 A로 선언하여 먼저 from에 사용한다.
+-> FROM tn_stdnt_info A
+
+비교 대상을 위해 inner join을 사용한다. A와 B테이블의 공통점을 쥐고있는 테이블은 C테이블이다.
+때문에 A와 C를 먼저 비교해준다.
+-> INNER JOIN tn_stdnt_quflcn_info C on A.stdnt_uno = C.stdnt_uno
+
+A와 C를 비교했기 때문에 C와 B의 공통점을 연결한다. (A와 B는 서로 공통되는 컬럼이 없음)
+-> INNER JOIN tn_quflcn_addpnt B on B.quflcn_code = C.quflcn_code
+
+마지막으로 문제의 핵심인 교번이 32510101인 학생을 뽑아내기 위해 WHERE 조건을 걸어준다.
+-> WHERE stdnt_no = 32510101;
+
+최종적으로
+SELECT A.FNM AS 이름, B.CODE_NM AS 자격증명, B.QUFLCN_CL_CODE AS 자격증코드, B.ADDPNT AS 가산점
+FROM TN_STDNT_INFO A
+INNER JOIN TN_STDNT_QUFLCN_INFO C ON A.STDNT_UNO = C.STDNT_UNO
+INNER JOIN TN_QUFLCN_ADDPNT B ON B.QUFLCN_CODE = C.QUFLCN_CODE
+WHERE STDNT_NO = 32510101;
