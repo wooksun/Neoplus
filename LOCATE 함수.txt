@@ -1,0 +1,34 @@
+<LOCATE 함수>
+Parameters: substring - 검색대상 문자열의 패턴 / string - 전체 문자열 / position - 검색 시작 위치
+LOCATE 함수란, 문자열 string 내에서 문자열 substring의 위치 인덱스 값을 반환한다.
+세번째 인자 position은 생략할 수 있으며, 이 인자가 지정되면 해당 위치에서부터 substring을 검색하여 처음 검색한 위치 인덱스 값을 반환한다.
+substring이 string 내에서 검색되지 않을 경우 0을 반환한다.
+LOCATE 함수는 POSITION()와 유사하게 동작되지만, 비트열에 대해서는 LOCATE 함수를 적용할 수 있다.
+
+EX)
+SELECT LOCATE(' ', '12345abcdeabcde '); ->e뒤에 공백(스페이스바)
+locate(' ', '12345abcdeabcde ')
+결과: 1
+이유: ' '는 공백을 찾는 것이므로 문자열 마지막 공백 값을 처리하여 1이 나온다.
+
+=================================================
+
+SELECT LOCATE ('abc', '12345abcdeabcde ');
+locate('abc', '12345abcdeabcde ')
+결과: 6
+이유: 'abc'를 찾는 값(substring)이 내용(string)에서 두번 나오기 때문에 총 6이 나온다.
+
+=================================================
+
+SELECT LOCATE('abc', '12345abcdeabcde ', 8);
+locate('abc', '12345abcdeabcde ')
+결과: 11
+이유: 세 번째 인자 값인 8은 8번째 이후 위치로부터 찾으려는 값이 몇번째 위치에 있는지 찾는 것이다.
+때문에 8번째 위치인 12345abc의 위치로부터 다음 abc는 11번째 자리에 위치하기 때문에 11이 나온다.
+ 
+=================================================
+
+SELECT LOCATE('ABC', '12345abcdeabcde ');
+locate('ABC', '12345abcdeabcde ')
+결과: 0
+이유: 찾으려는 'ABC'는 대문자고 내용에서 ABC는 존재하지 않기 때문에, 결과값은 0이 나온다.
