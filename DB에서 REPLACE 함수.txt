@@ -1,0 +1,17 @@
+<DB에서 REPLACE 함수>
+REPLACE는 특정 문자열을 치환하거나 제거하기 위해 사용되고, 단순 문자열 치환 이외에도
+엔터값 제거, 전화번호/특수문자 제거 등 다양한 상황에서 사용할 수 있다.
+
+(1) 특정 문자 치환 REPLACE("칼럼명 or 문자열", "찾을문자", "치환문자")
+SELECT REPLACE('Oracle Database', 'Oracle', 'Ora') AS result1
+	, REPLACE('Oracle Database', 'Database', 'DB') AS result2
+	, REPLACE('Oracle Database', 'D', 'd')
+FROM 테이블
+결과: result1 = Ora Database / result2 = Oracle DB / result3 = Oracle databse
+이유: 칼럼명or문자열 뒤에 찾을 문자에서 치환 문자를 정해주었기 때문에 조건에 맞는 문자가 치환 문자에 맞게 변경된 것을 확인할 수 있다.
+
+(2) 다중 문자열 치환(중첩 REPLACE)
+SELECT REPLACE(REPLACE('Oracle Database', 'Oracle', 'Ora'), 'Database, 'DB')
+FROM 테이블
+결과: Ora DB
+이유: 다중 REPLACE를 사용하려면 REPLACE 안에 또 REPLACE를 선언하여 치환할 수 있도록 한다.
