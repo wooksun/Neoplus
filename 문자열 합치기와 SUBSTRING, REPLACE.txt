@@ -1,0 +1,24 @@
+SELECT 'QL' || TO_NUMBER(REVERSE(SUBSTRING(REVERSE(REPLACE(QUFLCN_CL_CODE, 'QL', '')), 4))) +1 || '000' AS QUFLCN_CL_CODE
+
+-> 위 코드는 중경 '평가 > 성적관리 > 자격증코드관리'의 mapper의 일부 코드이다.
+위 코드를 분석해보자.
+
+SELECT -> 조회를 한다.
+SELECT 'QL' -> 'QL'을 조회한다.
+||	|| -> SELECT 문에서 ||는 문자열을 합치는 것이다.
+이제부터는 ||	|| 사이의 ( ) 내부부터 해석해보자.
+
+1. REPLACE(QUFLCN_CL_CODE, 'QL', '') -> REPLACE를 사용함으로써 'QL'은 찾을문자, ''는 치환할문자이다.
+	-> 'QL'을 찾아 ' '인 빈 문자열로 치환시키는 작업이다.
+2. REVERSE(REPLACE(QUFLCN_CL_CODE, 'QL', '')) -> 전 작업에서 치환된 내용을 REVERSE() 함수로 문자열을 역순으로 반환시킨다.
+
+3. SUBSTRING(REVERSE(REPLACE(QUFLCN_CL_CODE, 'QL', '')), 4) -> 전 작업에서 역순으로 반환시킨 문자열의 4번째 문자열부터 나열한다.
+
+4. REVERSE(SUBSTRING(REVERSE(REPLACE(QUFLCN_CL_CODE, 'QL', '')), 4)) -> 전 작업에서 역순의 4번째 문자열부터 나열한 것을 다시 역순으로 반환한다.
+
+※ TO_NUMBER( ) => 문자열을 숫자형으로 변환시키는 함수
+5. TO_NUMBER(REVERSE(SUBSTRING(REVERSE(REPLACE(QUFLCN_CL_CODE, 'QL', '')), 4))) -> 알맞게 추출한 값을 숫자형으로 변환
+
+6. 최초 실행 시 값은 0이기 때문에, +1 값을 해줌으로써 등록시에 코드 고유값은 1씩 증가하게 된다.
+
+최종적으로 SELECT 'QL'과 '000' 사이에 문자열을 합치므로 QL01000~QL37000과 같은 값을 얻을 수 있다.
