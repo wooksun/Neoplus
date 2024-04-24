@@ -1,0 +1,13 @@
+<REVERS 함수>
+REVERS함수는 문자열에 대해 실행되며, 문자를 역순으로 반환합니다.
+구문) REVERSE (exception)
+ex) reverse('abcde') => 'edcba'를 반환
+SELECT DISTINCT CITY AS cityname, REVERSE(cityname)
+FROM 테이블명
+
+cityname  |   reverse
+------------|------------
+Aberdeen | needrebA
+Abline     | enilbA
+Ada        | adA
+Agat       | tagA
