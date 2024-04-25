@@ -1,0 +1,116 @@
+<NVL 함수>
+NVL함수는 값이 NULL인 경우 지정값을 출력하고, NULL이 아니면 원래 값을 출력한다.
+사용형태 : NVL("값", "지정값")
+
+WITH EMP as (
+	SELECT 7839 EMPNO, 'KING' ENAME, 'PRESIDENT' JOB, null COMM FROM DUAL union all
+	SELECT 7654 EMPNO, 'MARTIN' ENAME, 'SALESMAN' JOB, 1400 COMM FROM DUAL
+)
+	
+SELECT EMPNO
+	, ENAME
+	, COMM            AS COMM
+	, NVL(COMM, 0) AS COMM2 -- 커미션이 NULL이면 '0'
+	FROM EMP
+
+=====================================
+EMPNO  |  ENAME  |  COMM  |  COMM2
+-------------------------------------------------
+  7839    |   KING    |              |       0
+-------------------------------------------------
+  7654    | MARTIN  |    1400    |    1400
+
+-> 이처럼 NVL이 COMM의 NULL 값을 판단하여 NULL이면 0을 출력하고, 값이 있다면 해당 값을 그대로 출력하게 된다.
+
+=========================================================================
+<NVL2 함수>
+WITH emp AS (
+	SELECT 7839 empno, 'KING' ename, 'PRESIDENT' job, NULL comm FROM dual UNION ALL
+	SELECT 7654 empno, 'MARTIN' ename, 'SALEMAN' job, 1400 comm FROM dual
+)
+
+SELECT empno
+	, ename
+	, comm AS comm
+	, NVL2(comm, 'Y', 'N') AS comm2 -- 커미션이 있으면 'Y' 없으면 'N'
+	FROM emp
+
+===========================
+EMPNO  |  ENAME  |  COMM  |  COMM2
+-------------------------------------------------
+  7839    |   KING    |              |       N
+-------------------------------------------------
+  7654    | MARTIN  |    1400    |      Y
+
+-> COMM이 NULL이면 'N'으로 표시
+-> NULL이 아니면 'Y'로 표시
+-> NVL2 함수를 사용할 때 NULL이 아닌경우자신의 값을 그대로 출력할 수도 있다.
+-> NVL2(comm, comm, '보너스없음')
+
+=========================================================================
+<DECODE 함수>
+SELECT DECODE(COMM, NULL, 0, COMM) AS decode_nvl
+	 , DECODE(COMM, NULL, 'N', 'Y') AS decode_nvl2
+	FROM emp
+
+=> DECODE_NVL  |  DECODE_NVL2
+     --------------------------------------
+               0          |          N
+
+=============================== <사용 예제> =================================
+SELECT CMPNO
+	, ENAME
+	, JOB
+	, MGR
+	, COMM
+    FROM SCOTT.EMP
+    WHERE EMPNO IN ('7849', '7499', '7844')
+
+====================================
+EMPNO  |     ENAME    |      JOB      |   MGR   |   COMM 
+------------------------------------------------------------------
+  7499    |      ALLEN     |  SALEMAN  |   7698   |     300    
+------------------------------------------------------------------
+  7839    |      KING      |  PRESIDENT |		| 	       
+------------------------------------------------------------------
+  7844    |    TURNER    |   SALEMAN  |  7698   |	0      
+====================================
+							  => 원본 데이터
+
+SELECT EMPNO
+	, ENAME
+	, JOB
+	, MGR
+	, NVL(COMM, 0) COMM
+    FROM SCOTT.EMP
+    WHERE EMPNO IN ('7839', '7499', '7844')
+
+====================================
+EMPNO  |     ENAME    |      JOB      |   MGR   |   COMM 
+------------------------------------------------------------------
+  7499    |      ALLEN     |  SALEMAN  |   7698   |     300    
+------------------------------------------------------------------
+  7839    |      KING      |  PRESIDENT |		| 	0      
+------------------------------------------------------------------
+  7844    |    TURNER    |   SALEMAN  |  7698   |	0      
+====================================
+		  => COMM 칼럼이 NULL인 경우 "0"으로 표시
+
+SELECT EMPNO
+	, ENAME
+	, JOB
+	, NVL2(MGR, 'Y', 'N') MGR_YN
+	, COMM
+    FROM SCOTT.EMP
+    WHERE EMPNO IN ('7839', '7499', '7844')
+
+====================================
+EMPNO  |     ENAME    |      JOB      |   MGR   |   COMM 
+------------------------------------------------------------------
+  7499    |      ALLEN     |  SALEMAN  |      Y     |     300    
+------------------------------------------------------------------
+  7839    |      KING      |  PRESIDENT |	  N	| 	    
+------------------------------------------------------------------
+  7844    |    TURNER    |   SALEMAN  |      Y    |	0      
+====================================
+		     => MGR 칼럼에 값이 있을 경우 "Y"로 표시
