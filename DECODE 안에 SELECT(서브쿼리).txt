@@ -1,0 +1,27 @@
+<DECODE 안에 SELECT(서브쿼리)>
+EX)
+SELECT a.empno
+	, a.ename
+	, a.deptno
+	, DECODE(a.deptno, '10', 'ACCOUNTING', '20', 
+		(SELECT aa.dname
+		FROM DEPT aa
+		WHERE aa.deptno = a.deptno)
+	) dname
+FROM emp a
+WHERE job = 'MANAGER'
+ORDER BY a.deptno
+
+=> DECODE 속에서 한번 서브쿼리를 사용하는 것을 볼 수 있다.
+	-> SELECT 문을 괄호로 감싸 작성하면 된다.
+	-> SELECT 문은 스칼라 서브쿼리로 작성해야 한다.
+	(하나의 행, 하나의 열이 반환 되어야 한다.)
+
+결과:
+EMPNO	|	ENAME	|	DEPTNO	|	DNAME
+---------------------------------------------------------------------------
+7782		|	CLARK	|	10		|   ACCOUNTING
+---------------------------------------------------------------------------
+7566		|	JONES	|	20		|     RESEARCH
+---------------------------------------------------------------------------
+7698		|	BLAKE	|	30		|
