@@ -1,0 +1,85 @@
+<DECODE 함수>
+DECODE 함수는 프로그래밍에서 if else와 비슷한 기능을 수행한다.
+DECODE (컬럼, '조건1', '결과1', '조건2', '결과2', '조건3'. '결과3' ...)
+
+EX) DECODE(GENDER, 'M', '남자', 'F', '여자'. '기타')
+-> if (GENDER == 'M')
+	return '남자'
+-> else if (GENDER == 'F')
+	reuturn '여자'
+-> else 
+	return '기타' 인 셈이다.
+=====================================
+WITH temp AS 
+(
+	SELECT 'M' gender FROM dual UNION ALL
+	SELECT 'F' gender FROM dual UNION ALL
+	SELECT 'X' gender FROM dual
+)
+SELECT gender
+	, DECODE(gender, 'M', '남자', 'F', '여자', '기타') gender2
+	FROM temp
+
+=> if (gender == 'M') {
+	return '남자';
+} else if (gender == 'F') {
+	return '여자';
+} else {
+	return '기타';
+}
+=====================================
+<예제 1>
+WITH TEMP AS 
+(
+	SELECT 'M' GENDER FROM DUAL UNION ALL
+	SELECT 'F' GENDER FROM DUAL UNION ALL
+	SELECT 'X' GENDER FROM DUAL
+)
+
+SELEC GENDER
+	, DECODE (GENDER, 'M', '남자', 'F', '여자') GENDER2
+	FROM DUAL
+
+=> 결과:
+GENDER	|	GENDER2
+----------------------------------
+	M	|	남자
+----------------------------------
+	F	|	여자
+----------------------------------
+	X	|	
+=====================================
+<예제 2>
+WITH TEMP AS
+(
+	SELECT 'M'	GENDER FROM DUAL UNION ALL
+	SELECT 'F' GENDER FROM DUAL UNION ALL
+	SELECT 'X' GENDER FROM DUAL
+)
+
+SELECT GENDER
+	, DECODE (GENDER, 'M', '남자', 'F', '여자', '기타') GENDER2
+	FROM DUAL
+
+=> 결과:
+GENDER	|	GENDER2
+----------------------------------
+	M	|	남자
+----------------------------------
+	F	|	여자
+----------------------------------
+	X	|	기타
+
+
+
+
+
+
+
+
+
+
+
+
+
+
