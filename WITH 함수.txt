@@ -1,0 +1,42 @@
+<WITH 함수>
+- 임시테이블을 만든다는 관점에서 본다면 VIEW와 쓰임세가 비슷하다. 
+	-> WITH는 서브쿼리라고 생각하면 됨
+
+사용이유: 복잡한 SQL에서 동일 블록에 대해 반복적으로 SQL문을 사용하는 경우 그 블록에 이름을 부여하여 재사용 할 수 있게 함으로써 쿼리 성능을 높일 수 있는데 WITH 절을 이용하여 미리 이름을 부여해서 Query Block을 만들 수 있습니다.
+===================
+WITH EXAMPLE AS
+(
+	SELECT 'WITH절' AS str1
+	FROM DUAL
+)
+SELECT * FROM EXAMPLE
+===================
+=> 결과:
+str1
+WITH절
+	=> WITH절 안의 내용을 EXAMPLE 이라는 것으로 명칭을 지어 사용하는 개념
+
+<다중 WITH문>
+WITH EXAMPLE AS -- 첫 번째 WITH문
+(
+	SELECT 'EX1' A FROM DUAL
+	UNION ALL
+	SELECT 'EX2' FROM DUAL
+),
+EXAMPLE2 AS -- 두 번째 WITH문
+(
+	SELECT 'EX3' A FROM DUAL
+	UNION ALL
+	SELECT EX1 FROM EXAMPLE -- 첫 번쨰 WITH문 참조
+)
+SELECT * FROM EXAMPLE2;
+=====================================
+=> 결과:
+      A
+--------------
+1. | EX3
+2. | EX1
+3. | EX2
+	=> 내부 쿼리를 돌고 최종적으로 EXAMPLE2 테이블을 조회하기 때문에
+	EX3이 최초의 A가 되기 때문에 1번, 첫 번째 WITH문에 A는 EX1이기 때문에
+	2번째는 EX1, 마지막으로 EXAMPLE 테이블의 컬럼인 EX2가 마지막에 조회된다.
