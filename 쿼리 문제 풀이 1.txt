@@ -1,0 +1,289 @@
+<쿼리 문제 블로그>
+https://blog.naver.com/PostView.naver?blogId=tkdqja8643&logNo=221317891450
+
+1. 덧셈 연산자를 이용하여 모든 사원에 대해서 $300의 급여 인상을 계산한 후, 사원의 이름, 급여, 인상된 급여를 출력하시오.
+SELECT ENAME AS 이름, SAL AS 급여, SAL + 300 AS 인상된 급여
+FROM EMP
+
+
+
+2. 사원의 이름, 급여, 연간 총 수입을 총 수입이 많은 것부터 작은 순으로 출력하시오, 연간 총수입은 월급에 12를 곱한 후 $100의 상여금을 더해서 계산
+SELECT ENAME AS 이름, SAL AS 급여, ASD AS 연간 총 수입
+FROM EMP
+WHERE SAL * 12 + 100
+ORDER BY DESC;
+	=> SELECT ENAME AS 사원명, SAL AS 급여, SAL*12+100 AS 연간_총_수입
+	     FROM EMP 라고 함.
+
+3. 급여가 2000을 넘는 사원의 이름과 급여를 표현, 급여가 많은 것부터 작은 순으로 출력하시오
+SELECT ENAME AS 이름, SAL AS 급여
+FROM EMP
+WHERE SAL >= 2000
+ORDER BY SAL DESC;
+
+4. 사원번호가 7788인 사원의 이름과 부서번호를 출력하시오
+SELECT ENAME AS 사원이름, DEPTNO AS 부서번호
+FROM EMP
+WHERE EMPNO = 7788;
+	=> WHERE EMPNO LIKE 7788;
+
+5. 급여가 2000에서 3000 사이에 포함되지 않는 사원의 이름과 급여를 출력하시오.
+SELECT ENAME AS 사원이름, SAL AS 급여
+FROM EMP
+WHERE SAL <= 2000 AND SAL >= 30000;
+-> 이것도 틀린 방법은 x
+	-> 하지만 BETWEEN이라는 방법이 있음
+		=> WHERE NOT SAL BETWEEN 2000 AND 3000
+
+6. 1981년 2월 20일부터 1981년 5월 1일 사이에 입사한 사원의 이름, 담당업무, 입사일을 출력하시오.
+SELECT ENAME AS 이름, JOB AS 담당업무, HIREDATE AS 입사일
+FROM EMP 
+WHERE HIREDATE BETWEEN '1981/2/20' AND '1981/5/1';
+
+7. 부서번화 20 및 30에 속한 사원의 이름과 부서번호를 출력, 이름을 기준(내림차순)으로 영문자순으로 출력하시오
+SELECT ENAME AS 이름, EMPNO AS 부서번호
+FROM EMP
+WHERE EMPNO BETWEEN 20 AND 30 
+ORDER BY ENAME DESC;
+
+8.  사원의 급여가 2000에서 3000사이에 포함되고 부서번호가 20 또는 30인 사원의 이름, 급여와 부서번호를 출력, 이름순(오른차순)으로 출력하시오
+SELECT ENAME AS 이름, SAL AS 급여, DEPTNO AS 부서번호
+FROM EMP 
+WHERE DEPTNO = 20 OR 30 AND SAL BETWEEN 2000 AND 3000
+	=> WHERE SAL BETWEEN 2000 AND 3000 AND DEPTNO IN (20, 30)
+		=> IN은 OR와 같은 역할을 하지만, 여러개를 지정하여 사용할 수 있다는 점에서 다르다.
+			=> OR: a or b / IN: (a, b, c, ...)
+ORDER BY ENAME;
+
+9. 1981년도에 입사한 사원의 이름과 입사일을 출력하시오. (LIKE 연산자와 와일드카드 사용)
+SELECT ENAME AS 이름, HIREDATE AS 입사일
+FROM EMP
+WHERE HIREDATE LIKE '1981%';
+	=> WHERE HIREDATE LIKE '81%';가 정답
+	=> SQL에서 문자열의 부분 일치를 조회할 때, 'LIKE' 연산자와 '%', '_' 기호를 활용한다.
+	=> 특정 단어의 포함 여부를 조회, 상품코드와 같이 규칙이 있는 문자열 값을 조회할 때 유용
+	=> LIKE 앞에 NOT을 붙여 부분 불일치 값 조회 가능
+
+10. 관리자가 없는 사원의 이름과 담당 업무를 출력하시오.
+SELECT ENAME AS 이름, JOB AS 담당업무
+FROM EMP
+WHERE MGR = NULL;
+
+11. 커미션을 받을 수 있는 자격이 되는 사원의 이름, 급여, 커미션을 출력하되 급여 및 커미션을 기준으로 내림차순 정렬하여 표시
+SELECT ENAME AS 이름, SAL AS 급여, COMM AS 커미션
+FROM EMP
+WHERE COMM != NULL
+	=> 이렇게 써도 될 지 모르겠지만, 정답지는 WHERE NOT COMM IS NULL
+ORDER BY SAL AND COMM DESC;
+
+12. 이름의 세번째 문자가 R인 사원의 이름을 표시하시오.
+SELECT ENAME AS 이름
+FROM EMP
+WHERE ENAME LIKE '__R';
+	=> like '__R'까진 굿, 하지만 뒤에 내용이 얼마나 있을지 모르기 때문에 '%'를 해줘야 함.
+	=> WHERE ENAME LIKE '__R%';
+
+13. 이름에 A와 E를 모두 포함하고 있는 사원의 이름을 표시하시오.
+SELECT ENAME AS 이름
+FROM EMP
+WHERE ENAME LIKE '%A%' AND ENAME '%E%';
+	=> where ename like '%A%' and ename like '%e%'; => AND 뒤에서 ENAME LIKE를 안함
+
+14. 담당업무가 CLERK, 또는 SALESMAN이면서 급여가 $1600, $950 또는 $1300이 아닌 사원의 이름, 담당업무, 급여를 출력하시오
+SELECT ENAME AS 이름, JOB AS 업무, SAL AS 급여
+FROM EMP
+WHERE JOB IN('CLERK', 'SALESMAN') AND SAL NOT IN(1600, 950, 1300);
+	=> WHERE NOT SAL IN(1600, 950, 1300);인데 왜 담당 업무에 대한 조건이 없는지?
+
+15. 커미션이 $500 이상인 사원의 이름과 급여 및 커미션을 출력하시오.
+select ename as 이름, sal as 급여, comm as 커미션
+from emp
+where comm >= 500;
+
+16. SUBSTR 함수를 사용하여 사원들의 입사한 년도와 입사한 달만 출력하시오 ex) 81/01/20
+SELECT ENAME AS 이름, SUBSTR(HIREDATE, 1, 2) 입사_년, SUBSTR(HIREDATE, 4, 2) 입사_달 
+FROM EMP
+	=> SUBSTR(HIREDATE, 1, 2)는 HIREDATE의 1번째 문자열부터 2개 추출 -> 연도만 추출됨
+	=> SUBSTR(HIREDATE, 4, 2)는 HIREDATE의 4번째 문자열부터 2개 추출 -> 달만 추출됨
+
+17.  SUBSTR 함수를 사용하여 4월에 입사한 사원을 출력하시오.
+SELECT * FROM EMP
+WHERE SUBSTR(hiredate, 4, 2) = '04'
+	=> where substr(HIREDATE, 5, 1)=4; 라고 하는데 왜일까
+
+18. MOD 함수를 사용하여 사원번호가 짝수인 사람만 출력하시오.
+SELECT * FROM EMP
+WHERE MOD('empno', 2)
+	=> WHERE MOD('empno', 2) = 0;
+	=> MOD 함수는 (원하는 값, 나눌 값)
+
+19. 입사일을 년도는 2자리(YY), 월은 숫자(MON)로 표시하고 요일은 약어(DY)로 지정하여 출력하시오.
+SELECT SUBSTR(HIREDATE, 1, 2) AS 입사_년, SUBSTR(HIREDATE, 4, 2) AS 입사_월, SUBSTR(HIREDATE, 6, 2) AS 입사_ 일
+FROM EMP;
+	=> SUBSTR(HIREDATE, 1, 2) YY, SUBSTR(HIREDATE, 4, 2) MON, SUBSTR(HIREDATE, 7, 2) DY 이어야 함.
+
+
+21. 사원들의 상관 사번을 출력하되 상관이 없는 사원에 대해서는 NULL 값 대신 0으로 출력하시오.
+select nvl(mgr, 0) from emp;
+	=> nvl("값", "지정값")을 판단하여 값이 null이면 지정값을 출력하고, 값이 있다면 값을 그대로 출력한다.
+
+22. DECODE 함수로 직급에 따라 급여를 인상하도록 하시오. 직급이 'ANALIST'인 사원은 200, 'SALESMAN'인 사원은 180, 'MANAGER'인 사원은 150, 'CLERK'인 사원은 100을 인상하시오.
+select ename as 이름, sal as 급여, DECODE(JOB, 'ANALYST', SAL+200, 'SALESMAN', SAL+180, 'MANAGER', SAL+150, 'CLERK', SAL+100) 인상된급여
+from emp;
+	=> 이름, 급여, 인상된급여를 추출해야하기 때문에 ename과 sal을 select 한다.
+	=> ename, sal을 select하고 바로 DECODE를 사용한다. DECODE(컬럼, 조건1, 결과1, 조건2, 결과2 ...) 때문에 컬럼인 JOB을 사용하여
+	=> (JOB, 'ANALYST', SAL+200, 'SALESMAN', SAL+180...)이 된다.
+
+23. 모든 사원의 급여 최고액, 최저액, 총액 및 평균 급여를 출력하시오. 평균에 대해서는 정수로 반올림 하시오.
+SELECT ENAME AS 사원이름, MAX(SAL) AS 최고액, MIM(SAL) AS 최저액, SUM(*) AS 총액, AVG(SAL) AS 평균
+FROM EMP;
+	=> SELECT MAX(SAL) AS 최고액, MIN(SAL) AS 최저액, SUM(SAL) AS 총액, ROUND(AVG(SAL)) AS 평균 이라고 한다.
+	=> 이름은 제외된 금액만 추출하는 내용이고, SUM(*)은 전체를 더하라는 의미에서 한건데 아니었다.
+	=> 똑같이 전체면 SUM(SAL)해주면 된다.
+	=> ROUND 함수는 SQL에서 소수점 자리수를 지정하기 위해 사용된다. 특정 소수점을 반올림하고 나머지는 버리는 함수이다.
+	=> 때문에 ROUND(AVG(SAL))이 되는 것이다.
+
+24. 각 담당 업무 유형별로 급여 최고액, 최저액, 총액 및 평균 액을 출력하시오. 평균에 대해서는 정수로 반올림 하시오.
+SELECT JOB AS 업무 유형
+FROM EMP
+WHERE MAX(SAL), MIN(SAL), SUM(SAL), ROUND(AVG(SAL));
+	=> SELECT JOB AS 담당업무, MAX(SAL) AS 최고액, MIN(SAL) AS 최저액, SUM(SAL) AS 총액, ROUND(AVG(SAL)) AS 평균
+	=> FROM EMP
+	=> GROUP BY JOB;
+	=> GROUP BY는 SUM, AVG, COUNT등 집계성 데이터를 추출할 때 사용된다. 또한 GROUP BY 절의 컬럼은 SELECT 절에 존재해야 한다.
+
+25. COUNT(*) 함수를 이용하여 담당업무가 동일한 사원 수를 출력하시오.
+SELECT JOB AS 담당업무, COUNT(*) AS 사원수
+FROM EMP
+GROUP BY JOB;
+	=> 위와 같이 집계성 데이터를 추출할 때 GROUP BY가 사용되기 때문에 여기서도 사용해야 한다.
+	=> 우리가 조회할 것은 담당업무인 JOB과 사원수여야 했다.
+	=> 나는 SELECT에 COUNT(*) AS 사원수는 생각못함.
+	=> 집계성 데이터를 다루는 내용과 GROUP BY를 어떤 때 써야할지 감을 익히자.
+
+26. 관리자 수를 나열하시오.
+SELECT COUNT(DISTINCT MGR) AS 관리자 수 FROM EMP;
+	=> 관리자 '수'를 나열하기 때문에 COUNT 함수 사용함.
+	=> 중복제거를 위해 DISTINCT를 사용하고, 관리자는 MGR이다.
+
+27. 급여 최고액과 최저액의 차액을 출력
+SELECT MAX(SAL) - MIN(SAL) AS 차액
+FROM EMP;
+
+28. 직급별 사원의 최저 급여를 출력하시오. 관리자를 알 수 없는 사원의 최저 급여가 2000 미만인 그룹은 제외시키고 결과를 급여에 대한 내림차순으로
+정렬하여 출력하시오.
+select ename as 사원이름, min(sal) as 최저급여
+from emp
+where 
+order by sal desc;
+	=> SELECT JOB AS 직급, MIN(SAL) AS 최저액
+	=> FROM EMP
+	=> HAVING MIN(SAL) >= 2000
+	=> GROUP BY JOB
+	=> ORDER BY MIN(SAL) DESC;
+	=> 직급별 사원의 최저급여이기 때문에 JOB, SAL 컬럼을 사용(급여는 최저액을 사용하기 때문에 MIN(SAL)을 사용)
+	=> 최저 급여에 대한 조건이 2000 미만이기 때문에, HAVING 절을 사용한다.
+		=> HAVING MIN(SAL) >= 2000 => 최저 급여가 2000보다 크거가 같을 때
+	=> GROUP BY JOB => JOB 컬럼을 GROUP BY 하여 추출
+	=> 최저 급여를 내림차순 정렬 => ORDER BY MIN(SAL) DESC;
+	
+29. 각 부서에 대해 부서번호, 사원 수, 부서 내의 모든 사원의 평균 급여를 출력하시오. 평균 급여는 소수점 둘째 자리로 반올림 하시오.
+SELECT DEPTNO AS 부서번호, COUNT(*) AS 사원수, ROUND(AVG(SAL), 2) AS 평균급여
+FROM EMP
+GROUP BY DEPTNO
+	=> SELECT DEPTNO AS 부서번호, COUNT(DEPTNO) AS 사원수, ROUND(AVG(SAL), 2) AS 평균급여
+	=> COUNT(*)가 아닌 COUNT(DEPTNO)이다. 각 부서에 대하여니까, 전체가 아닌 부서 번호를 부여하는 것이 맞다.
+
+30. 각 부서에 대해 부서번호 이름, 지역명, 사원수, 부서내의 모든 사원의 평균 급여를 출력하시오. 평균 급여는 정수로 반올림하시오. DECODE 사용
+SELECT DNAME AS 부서번호 이름, LOC AS 지역명, COUNT(DEPTNO) AS 사원수, DECODE(SAL, ROUND(AVG(SAL)), 0)
+FROM DEPT
+	=> SELECT DEPTNO, 
+		DECODE(DEPTNO, 10, 'ACCOUNTTING'
+					, 20, 'RESEARCH'
+					, 30, 'SALES'
+					, 40, 'OPERATIONS') AS 이름, 
+		DECODE(DEPTNO, 10, 'NEWYORK'
+					, 20, 'DALLAS'
+					, 30, 'CHICAGO'
+					, 40, 'BOSTON') AS 지역명, 
+		COUNT(*) AS 사원수, 
+		ROUND(AVG(SAL)) AS 평균급여
+		FROM EMP
+		GROUP BY DEPTNO;
+	=> 우선 부서번호를 SELECT하고, DECODE를 활용하여 부서별 이름을 가져오는 이름 DECODE를 사용한다.
+	=> 또한 지역명을 가져오기 위하여 위와 같이 부서번호를 활용한 DECODE를 사용해 지역명을 가져온다.
+	=> 사원수는 COUNT 함수를 활용하여  모든 인원을 가져오고
+	=> ROUND 함수를 활용하여 반올림 된 정수값을 가져온다.
+	=> GROUP BY로 컬럼 DEPTNO 마무리
+
+31. 업무를 표시한 다음 해당 업무에 대해 부서 번호별 급여 및 부서 10, 20, 30의 급여 총액을 각각 출력하시오.
+별칭은 각 job, dno, 부서 10, 부서 20, 부서 30, 총액으로 지정하시오.
+	=>SELECT E.DEPTNO AS 부서번호, SUM(E.SAL) AS 총액, D.DNAME AS 부서명
+	=>FROM EMP E, DEPT D
+	=>WHERE E.DEPTNO = D.DEPTNO
+	=>GROUP BY E.DEPTNO, D.DNAME;
+		=> 각 테이블의 별칭에 맞게 SELECT 절을 작성한다. 
+		=> WHERE 조건절에서 E와 D테이블의 DEPTNO이 같은 것을 조건으로 건다.
+		=> 급여를 다루는 SUM(E.SAL)과 DNAME을 GROUP BY 해준다.
+		
+32. EQUI 조인을 사용하여 SCOTT 사원의 부서번호와 부서 이름을 출력하시오
+SELECT E.DEPTNO AS 부서번호, D.DNAME AS 부서이름
+FROM EMP E
+ON DMP D, E.DEPTNO = D.DNAME;
+	=> SELECT E.ENAME AS 사원명, E.DEPTNO AS 부서번호, D.DNAME AS 부서이름
+	=> FROM EMP E, DMP D
+	=> WHERE E.DEPTNO = D.DEPTNO AND E.ENAME LIKE 'SCOTT';
+	=> 사원명과 부서번호, 부서이름을 조회한다.
+	=> 테이블은 EMP와 DMP 모두 별칭을 사용한다.
+	=> E와 D테이블의 교집합인 DEPTNO와 ENAME이 SCOTT인 사원을 찾는 조건을 세운다.
+
+33. INNER JOIN과 ON 연산자를 사용하여 사원 이름과 함께 그 사원이 소속된 부서이름과 지역 명을 출력하시오.
+SELECT E.ENAME AS 사원이름, E.DEPTNO AS 부서이름, D.LOC AS 지역명
+FROM EMP E
+INNER JOIN DMP D ON E.DEPTNO = D.DEPTNO;
+	=> SELECT EMP.ENAME AS 사원이름, DEPT.DNAME AS 부서이름, DEPT.LOC AS 지역명
+	=> FROM EMP INNER JOIN DEPT USING (DEPTNO);
+	=> USING 함수는 ON절과 마찬가지로 WHERE절을 대신해 JOIN에 대한 조건을 쓸 때 사용한다. 다만 ON절과 사용하는 방법이 다르다.
+	=> USING 함수는 JOIN 조건을 만족하는 컬럼명만 괄호안에 입력한다.
+
+34. INNER JOIN과 USING 연산자를 사용하여 10번 부서에 속하는 모든 담당, 담당업무의 고유 목록(한번씩만 표시)을 부서의 지역명을 포함하여 출력
+(사원번호, 지역명, 담당업무)
+SELECT E.EMPNO AS 사원번호, D.LOC AS 지역명, E.JOB AS 담당업무
+FROM EMP E
+INNER JOIN DMP D USING(DEPTNO)
+WHERE DEPTNO = 10;
+
+<NATURAL JOIN>
+NATURAL JOIN은 INNER JOIN의 하위 개념으로, 두 relation 간에 일치하는 모든 column들에 대해 join을 수행한다.
+두 relation 간에 일치하는 모든 column들에 대해 join을 수행한다?
+	-> table1과 table2가 각각 존재하고 컬럼이 둘 다 a, b, c로 일치한다고 할 때, 
+	-> NATURAL JOIN은 일치하는 모든 column에 대해 join을 수행 -> a, b, c가 모두 일치하는 tuple 출력.
+(1) NATURAL JOIN은 무조건 '이름도 같고, 타입도 같은' 열에 대해 수행된다.
+(2) NATURAL JOIN은 위의 조건을 만족하는 모든 열에 대해 수행된다.
+(3) 1과 2에 의해, NATURAL JOIN에서는 ON을 이용한 JOIN 조건을 명시할 수 없다.
+(4) NATURAL JOIN에서는 alias를 사용할 수 없다.
+
+35. NATURAL JOIN을 사용하여 커미션을 받는 모든 사원의 이름, 부서이름, 지역명을 출력하시오.
+SELECT EMP.ENAME AS 사원이름, DEPT.DNAME AS 부서 이름
+FROM EMP NATURAL JOIN DEPT 
+WHERE NOT COMM IS NULL;
+	=> NATURAL JOIN은 Alias를 사용하지 못하기 때문에 테이블명을 그대로 사용한다.
+	=> NOT COMM IS NULL 즉, NULL이 아닌 것을 출력하는 조건식이다.
+
+36. EQUI 조인과 WildCARD를 사용하여 이름에 'A'가 포함된 모든 사원의 이름과 부서명을 출력하시오.
+SELECT EMP.ENAME AS 이름, DEPT.DNAME AS 부서명
+FROM EMP, DEPT
+WHERE EMP.DEPTNO == DEPT.DEPTNO
+AND EMP.ENAME LIKE '%A%';
+	=> 이름과 부서명을 위해 EMP와 DEPT 테이블을 사용한다.
+	=> 이름과 부서명에서 'A'문자를 찾기 위해선, 각 다른 테이블을 결합하기 위해 공통된 컬럼을 통할 수 있도록 한다. (DEPTNO)
+	=> AND 이름에 'A'가 포함된 자료를 찾기 위해 '%A%' => %를 앞, 뒤로 설정하여 자리수에 상관없이 조회하도록 한다.
+
+37. NATURAL JOIN을 이용하여 NEW YORK에 근무하는 모든 사원의 이름, 업무, 부서번호 및 부서명을 출력하시오.
+SELECT EMP.ENAME 이름, EMP.JOB 업무, D.DEPTNO 부서번호, D.DNAME 부서명
+FROM EMP
+NATUTAL JOIN DEPT
+WHERE DNAME = 'NEW YORK';
+	=> WHERE DEPT.LOC = 'NEW YORK'
+	=> 테이블을 정확히 파악하지 않고 문제를 풀었음.
+	=> '테이블.컬럼명' 형태로 사용하지 않았음(주의)
