@@ -1,0 +1,67 @@
+<쿼리 문제 블로그>
+https://blog.naver.com/PostView.naver?blogId=tkdqja8643&logNo=221317891450
+
+
+38. SELF JOIN을 사용하여 사원의 이름 및 사원번호를 관리자 번호화 함께 출력하시오.
+SELECT E1.ENAME 사원이름, E1.EMPNO 사원번호, E2.MGR 관리자 번호
+FROM EMP E1
+SELF JOIN E2
+WHERE E1.EMPNO = E2.MGR
+	=> SELECT E1.ENAME 사원명, E1.EMPNO 사원번호, E2.MGR 관리자번호, E2.ENAME 관리자명
+	=> FROM EMP E1, EMP E2
+	=> WHERE E1.EMPNO = E2.MGR
+	=> ORDER BY E.ENAME;
+	=> ORDER BY절 사용하는건 생각 못했음.
+
+39. OUTER JOIN, SELF JOIN을 사용하여 관리자가 없는 사원을 포함하여 사원번호를 기준으로 내림차순 정렬하여 출력하시오.
+관리자 없는 사원 'COMM IS NULL' 포함, EMPNO 기준 내림차순 ORDER BY DESC
+SELECT E1.ENAME 사원명, E2.EMPNO 사원번호
+FROM EMP E1, EMP E2
+ON E1.ENAME = E2.EMPNO
+WHERE COMM IS NULL
+ORDER BY EMPNO DESC;
+	=> SELECT E1.ENAME 사원명, E1.EMPNO 사원번호
+	=> FROM EMP E1, EMP E2
+	=> WHERE E1.MGR = M1.EMPNO(+)
+	=> ORDER BY E1.EMPNO DESC;
+
+40. SELF JOIN을 사용하여 지정한 사원의 이름, 부서번호, 지정한 사원과 동일한 부서에서 근무하는 사원을 출력하시오. (SCOTT)
+SELECT E1.ENAME 이름, E2.DEPTNO 부서번호
+FROM EMP E1, EMP E2
+WHERE E1.ENAME = E2.DNAME
+	=> SELECT E1.ENAME 사원명, E2.DEPTNO 부서번호
+	=> FROM EMP E1, EMP E2
+	=> WHERE E1.DEPTNO = E2.DEPTNO
+	=> AND E2.ENAME = 'SCOTT';
+	=> 나는 WHERE 조건을 문제와 동일하게 사원과 부서라는 개념 때문에 E1.ENAME과 E2.DNAME을 사용함 (X)
+	=> E1과 E1테이블의 공통된 부서를 찾기위해 E1과 E2의 DEPTNO(부서번호)를 가져온다.
+	=> 또 다른 조건으로 SCOTT이라는 지정한 사원을 출력하기 위해 AND E1.ENAME = 'SCOTT'을 덧붙인다.
+
+41. SELF JOIN을 사용하여 WARD 사원보다 늦게 입사한 사원의 이름과 입사일을 출력하시오. (사원명, 입사일)
+-> WARD 사원보다 늦게 입사한 사원이 중요함 조건을 어떻게 세울것이냐가 중요
+-> HIREDATE <= 'WARD' 사원 이 느낌으로 가야함
+SELECT E1.ENAME 사원명, E2.HIREDATE 입사일
+FROM EMP E1, EMP E2
+WHERE E1.HIREDATE = E2.HIREDATE
+AND E2.HIREDATE <= E1.ENAME('WRAD');
+	=> SELECT E.ENAME 사원명, E.HIREDATE 입사일
+	=> FROM EMP E, EMP E1
+	=> WHERE E.HIREDATE < E1.HIREDATE
+	=> AND E1.ENAME = 'WARD';
+	=> SELECT에서 조회되고 출력될 사람은 'WARD'보다 입사일이 늦는 사원이다.
+	=> 그렇다면 E 테이블은 E1 테이블의 HIREDATE가 작아야 한다.
+	=> 또한, E 테이블은 E1 테이블보다 값이 작아야 하기 때문에, E1 테이블에 존재하는 'WARD'라는 사원의 이름을 조건으로 한다.
+
+42. SELF JOIN을 사용하여 관리자보다 먼저 입사한 모든 사원의 이름 및 입사일을 관리자의 이름 및 입사일과 함께 출력하시오.
+(사원이름 사원입사 관리자입사 관리자 이름)
+SELECT E1.ENAME 사원이름, E1.HIREDATE 사원입사, E.HIREDATE 관리자입사, E.ENAME 관리자이름
+FROM EMP E, EMP E1
+WHERE E.HIREDATE >= E1.HIREDATE
+	=> SELECT 동일
+	=> FROM 동일
+	=> WHERE E.EMPNO = E1.MGR
+	=> AND E1.HIREDATE < E.HIREDATE
+	=> ORDER BY E1.ENAME;
+	=> 조건에서 E1 테이블의 사원번호와 E테이블의 관리자코드 MGR이 같은지 확인한다.
+	=> 그리고 두 테이블의 입사일 중 E 테이블이 더 큰 것을 고른다.
+	=> 마무리로 이름을 정렬시킨다.
