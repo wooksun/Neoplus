@@ -17,6 +17,6 @@ on A1.entsch_uno = B1.entsch_uno
 where A1.stdnt_no = 32910101;
 
 2. where절에서의 서브쿼리
-select A1.*
+select A1.enc_end_de
 from tn_entsch_info A1
 where A1.entsch_uno = (select B1.entsch_uno from tn_stdnt_info B1 where B1.stdnt_no = 32410101);
