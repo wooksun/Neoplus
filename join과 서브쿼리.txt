@@ -1,0 +1,22 @@
+- 교육생 로그인을 하려했으나 교육종료일이 로그인 시점으로부터 이전에 종료되어 로그인이 안됨
+-> DB에서 enc_end_de(교육종료일) 컬럼을 수정해야 한다.
+
+-> 32910101(찾으려는 교육생 번호)를 조회한다.
+select * from tn_stdnt_info where stdnt_no = 32910101;
+	-> 컬럼 중, entsch_uno(입교고유번호)를 찾는다.
+
+select * from tn_entsch_info where entsch_uno = 'ENT527';
+-> 위의 조회를 바탕으로 입교고유번호를 조회했을 때, enc_end_de 컬럼이 나오게 된다. 여기서 수정하면 됨.
+
+- 위의 두 쿼리를 사용하기보다 하나의 쿼리를 사용하여 조회하고자 한다.
+1. INNER JOIN
+select B1.enc_end_de
+from tn_stdnt_info A1
+inner join tn_entsch_info B1
+on A1.entsch_uno = B1.entsch_uno
+where A1.stdnt_no = 32910101;
+
+2. where절에서의 서브쿼리
+select A1.*
+from tn_entsch_info A1
+where A1.entsch_uno = (select B1.entsch_uno from tn_stdnt_info B1 where B1.stdnt_no = 32410101);
