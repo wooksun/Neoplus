@@ -1,0 +1,28 @@
+<DB에서 ALTER>
+ALTER란? 
+- 테이블을 만들고나서 수정을 해야 하는 경우, Column 추가 및 Column 삭제 등 Table의 데이터에 큰 영향을 미치지 않고
+테이블을 수정해야 하는 경우에 ALTER 문을 사용한다.
+
+-> ALTER문을 통해서 사용자는 열과 제약 조건을 변경, 추가 또는 삭제하거나 파티션을 재할당하고 다시 작성하거나 제약 조건과 트리거를 설정
+또는 해제하여 테이블 정의에 대한 수정이 가능하다.
+
+ALTER 문을 통해서 처리할 수 있는 기능
+1. 테이블에 열을 추가한다.
+2. 테이블에 열을 제거한다.
+3. 기존의 열 이름과 데이터 타입 혹은 위치를 변경한다.
+
+- 테이블에 열 추가하기
+'ALTER TABLE 테이블명 ADD 컬럼명 데이터타입'
+EX) NEW_COLUMN 열 추가하기
+ALTER TABLE CONTACTS_TABLE ADD NEW_COLUMN VARCHAR(20) NULL;
+(실제 중경코드) ALTER TABLE TN_STDNT_INFO ADD COLUMN clsf_code VARCHAR(4) AFTER grdtb_clsf_code; 
+
+- 테이블에 열 삭제하기
+'ALTER TABLE 테이블명 DROP 컬럼명'
+EX) 새로 생성한 'NEW_COLUMN' 열 삭제하기
+ALTER TABLE CONTACTS_TABLE DROP COLUMN NEW_COLUMN;
+
+- 기존의 열의 타입 변경하기
+'ALTER TABLE 테이블명 ALTER COLUMN 컬럼명 데이터타입'
+EX) NAME 컬럼의 길이가 20에서 30으로 변경하기 
+ALTER TABLE CONTACTS_TABLE ALTER COLUMN NAME VACHAR(30)
