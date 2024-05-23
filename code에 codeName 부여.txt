@@ -1,0 +1,41 @@
+<code에 codeName 부여>
+- 최초의 상훈 DB 코드이다. 뷰 페이지에서 조회할 때 불러오는 데이터들이 담긴 XML 코드이다.
+SELECT
+	PI.CLSF_CODE as clsfCode	/*계급코드*/
+        ,PI.CNFER_DE AS cnferDe	/*수여일*/
+	,PI.PZDCR_KND AS pzdcrKnd	/*상훈종류*/
+	,PI.PZDCR_NM AS pzdcrNm	/*공적개요*/
+	,PI.PZDCR_NO AS pzdcrNo	/*호수*/
+	,PI.CNFER_INSTT AS cnferInstt	/*수여기관*/
+FROM
+	TN_PZDCR_INFO PI
+WHERE
+	PI.STDNT_UNO = 'STD40751'
+AND
+	PI.DELETE_AT IS NULL OR PI.DELETE_AT = 'N');
+		-> 사용자에게 '계급'란에 있는 '계급코드'의 데이터를 보여주게 되면 'CL04'와 같은 코드 값이 출력된다.
+		사용자에게 계급코드를 보여주기보다 정의된 계급의 이름을 보여주도록 해야한다. 
+
+
+< 수정된 코드 >
+SELECT
+	PI.CLSF_CODE as clsfCode	/*계급코드*/
+	, (SELECT CD.CODE_NM FROM TC_CMMN_DETAIL CD WHERE CD.CODE = PI.CLSF_CODE and CD.CODE_ID='MN002') AS clsfCodeNm	/*계급코드명*/
+        ,PI.CNFER_DE AS cnferDe	/*수여일*/
+	,PI.PZDCR_KND AS pzdcrKnd	/*상훈종류*/
+	,PI.PZDCR_NM AS pzdcrNm	/*공적개요*/
+	,PI.PZDCR_NO AS pzdcrNo	/*호수*/
+	,PI.CNFER_INSTT AS cnferInstt	/*수여기관*/
+FROM
+	TN_PZDCR_INFO PI
+WHERE
+	PI.STDNT_UNO = 'STD40751'
+AND
+	PI.DELETE_AT IS NULL OR PI.DELETE_AT = 'N');
+		-> 계급코드 아래에 '계급코드명'을 사용하도록 서브쿼리를 작성한다.
+		-> SELECT는 TC_CMMN_DETAIL 테이블의 CODE_NM을 불러오도록 한다.
+		-> 참고로 나는 INNER JOIN을 서브쿼리에서 활용했었는데 CD.CODE_ID='ST004'와 같은 특정 코드 외에는 TUPLE 오류가 떴다.
+		-> '하나 이상의 튜플을 가질 수 없다'는 오류였는데, 작성된 XML을 다시 보니 서브쿼리에 INNER JOIN을 활용하지 않았다.
+		-> 그래서 JOIN을 사용하지 않고 WHERE절에 AND를 사용하여 조건을 두개 걸어보았다. 
+		-> CD테이블의 CODE와 PI테이블의 CLSF_CODE가 같은 것 중 CD테이블의 CODE_ID가 'MN002'인 것을 clsfCodeNm으로 조회하도록 설정
+		-> 쿼리문 수정은 뷰페이지에서 계급란에 코드가 조회되지 않고, 조건에 맞는 계급명으로 성공적으로 완료되었다.
