@@ -1,0 +1,129 @@
+<경력을 모두 더해 총경력으로 출력하는 이벤트>
+<html>
+careerCalcPop 이라는 id를 통해 값을 전달받는다.
+<li class='list'>
+	<ul>
+        	<li>
+			<ul class='dataIntWrap'>
+				<input type="text" 
+					data-table='careerCalc' 
+					id="careerCalcPop" 
+					name="careerCalc" 
+					title='경력년수' 
+					maxlength='200' 
+					class='input w100' disabled/>
+			</ul>
+		</li>
+		<li>
+                	<input type='number' data-table='asessSrcls' id="asessSrclsPop" name="asessSrcls" title="사정호봉 입력" class='input w100' />
+                </li>
+                <li>
+                	<input type='number' data-table='srcls' id="srclsPop" name="srcls" title='호봉 입력' class='input w100'/>
+                </li>
+	</ul>
+</li>
+
+<script>
+1. 수정창이 열리는 팝업 case
+else if($tabUnit == "8") { /* 승급기록 */
+
+	if(vo != null) {
+		$("#careerCalcPop").val(cfnEmpty(vo.careerCalc));
+	   	$("#asessSrclsPop").val(cfnEmpty(vo.asessSrcls));
+	   	$("#srclsPop").val(cfnEmpty(vo.srcls));
+   	}
+
+   	list = map.promtRcordList;
+   	var cumrer = 0;
+
+   	if(list.length > 0) {
+   		for(i = 0; i < list.length; i++) {
+
+   		var oldDate = new Date(cfnDashDate(list[i].careerBeginDe));
+   		var newDate = new Date(cfnDashDate(list[i].careerEndDe));
+   		let diff2 = Math.ceil(Math.abs(newDate.getTime() - oldDate.getTime()) / (1000 * 60 * 60 * 24));
+   		cumrer += diff2;
+
+   		/* 경력 */
+   		listHtml += "<li class='list'>";
+   		listHtml += "    <ul>";
+   		listHtml += "        <li>";
+   		listHtml += "            <input type='hidden' data-table='promtRcordUno' value='"+cfnEmpty(list[i].promtRcordUno)+"' />";
+   		listHtml += "            <ul class='dateIntWrap'>";
+   		listHtml += "               <li class='datepickerBox w100'><input type='text' maxlength='10' value='"+cfnEmpty(cfnDashDate(list[i].careerBeginDe, '.'))+"' class='datepicker input startDate w100' data-table='careerBeginDe' title='경력년수(시작일) 입력' placeholder='YYYY.MM.DD' onchange='qwe()'></li>";
+   		listHtml += "            </ul>";
+   		listHtml += "        </li>";
+   		listHtml += "        <li>";
+   		listHtml += "            <ul class='dateIntWrap'>";
+   		listHtml += "               <li class='datepickerBox w100'><input type='text' maxlength='10' value='"+cfnEmpty(cfnDashDate(list[i].careerEndDe, '.'))+"' class='datepicker input endDate w100' data-table='careerEndDe' title='경력년수(종료일) 입력' placeholder='YYYY.MM.DD' onchange='qwe()'></li>";
+   		listHtml += "            	<input type='hidden' data-table='careerSum' value='"+cfnEmpty(diff2)+"' />";
+   		listHtml += "            </ul>";
+   		listHtml += "        </li>";
+   		listHtml += "        <li>";
+   		listHtml += "            <input type='text' data-table='positnFrstCode' title='직위 또는 직종(최초) 입력' maxlength='200' data-code='MN002' class='input w100' value='"+cfnEmpty(list[i].positnFrstCodeNm)+"' />";
+   		listHtml += "        </li>";
+   		listHtml += "        <li>";
+   		listHtml += "            <input type='text' data-table='positnLastCode' title='직위 또는 직종(최종) 입력' maxlength='200' data-code='MN002' class='input w100' value='"+cfnEmpty(list[i].positnLastCodeNm)+"' />";
+   		listHtml += "        </li>";
+   		listHtml += "        <li>";
+   		listHtml += "            <input type='text' data-table='workInstt' title='근무기관 입력' maxlength='100' class='input w100' value='"+cfnEmpty(list[i].workInstt)+"' />";
+   		listHtml += "        </li>";
+   		listHtml += "        <li>";
+   		listHtml += "            <input type='text' data-table='proofIssuInstt' title='증명 발급기관 입력' maxlength='100' class='input w100' value='"+cfnEmpty(list[i].proofIssuInstt)+"' />";
+   		listHtml += "        </li>";
+   		listHtml += "    </ul>";
+   		listHtml += "    <a href='javascript:void(0);' onclick='fnDeleteRow(this, \""+list[i].promtRcordUno+"\");' class='btnBar'></a>";
+   		listHtml += "</li>";
+   		}
+   	}
+
+   	$("#careerCalcPop").val(cfnEmpty(cumrer));
+
+   	listHtml += fnPromRcordListHtml();
+
+   	$("#promtRcordListPop").html(listHtml);
+
+   	code = ["ST004", "MN002"];
+   	cfnCodeList(code);
+   	cfnCodeComboAddList(code); // 코드 selectbox setting
+}
+
+- oldDate와 newDate를 계산한 diff2를 cumrer에 더하여 담음 -> 경력일끼리 더한 값
+
+2. 정보 수정할 값이 담긴 case
+case "8": // 승급기록
+/* 승급기록의 년월일, 사정호봉, 호봉 id처리 해야 함. */
+$.each($("#promtRcordListPop > li"), function(index, item) {
+
+	$("#test").val(careerEndDe - careerBeginDe);
+
+	var $item = $(item);
+
+	if($.isEmpty($item.find("input[data-table=careerBeginDe]").val()) &&
+		$.isEmpty($item.find("input[data-table=careerEndDe]").val()) &&
+		$.isEmpty($item.find("input[data-table=positnFrstNm]").val()) &&
+		$.isEmpty($item.find("input[data-table=positnLastNm]").val()) &&
+		$.isEmpty($item.find("input[data-table=workInstt]").val()) &&
+		$.isEmpty($item.find("input[data-table=proofIssuInstt]").val())) {
+			return;
+		}
+
+		tempData = {
+			'promtRcordUno': $item.find("input[data-table=promtRcordUno]").val(),
+			'careerBeginDe': $item.find("input[data-table=careerBeginDe]").val(),
+			'careerEndDe': $item.find("input[data-table=careerEndDe]").val(),
+			'careerSum': diff2,
+			'positnFrstNm': $item.find("input[data-table=positnFrstNm]").val(),
+			'positnLastNm': $item.find("input[data-table=positnLastNm]").val(),
+			'workInstt': $item.find("input[data-table=workInstt]").val(),
+			'proofIssuInstt': $item.find("input[data-table=proofIssuInstt]").val()
+		}
+		tempList.push(tempData);
+	});
+
+	if(!exit) {
+		param.promtRcordList = tempList;
+	}
+	break;
+
+1번에서 oldDate와 newDate를 더한 값을 담은 careerSum를 담아 html id="careerCalcPop"에 담아주면서, 경력들의 총 합을 담은 총경력 값이 입력된다.
