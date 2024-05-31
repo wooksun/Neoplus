@@ -1,0 +1,15 @@
+/*
+	주민등록번호 (*)처리
+	fnIdnoCnvr(주민등록번호)
+	ex) cfnIdnoCnvr('9001011234567') -> 900101 - *******
+/*/
+function cfnIdnoCnvr(idno) {
+    if ($.isNotEmpty(idno)) {
+        idno = idno.replace(/[^0-9]/g, '');
+
+        if (idno.length == 13) {
+            idno = idno.substring(0,6) + " - *******";
+        }
+    }
+    return idno;
+}
