@@ -1,0 +1,49 @@
+/*
+	날짜시간 변환처리
+	cfnDashDateTime(날짜시간문자열)
+	cfnDashDateTime('20200101131110') -> 2020-01-01 13:11:10
+	cfnDashDateTime('20200101131110', '/', '/') -> 2020/01/01 13/11/10
+/*/
+function cfnDashDateTime(strValue, separatorDate, separatorTime) {
+
+    if (!separatorDate) {
+        separatorDate = "-";
+    }
+
+    if (!separatorTime) {
+        separatorTime = ":";
+    }
+
+    var rtnStr = strValue.replace(/[^0-9]/g, "");
+
+    if (rtnStr.length < 14) {
+        rtnStr = rtnStr.substring(0, 14);
+    }
+
+    if (rtnStr.length >= 14) {
+        rtnStr = rtnStr.substring(0, 4) + separatorDate
+            + rtnStr.substring(4, 6) + separatorDate + rtnStr.substring(6, 8)
+            + " " + rtnStr.substring(8, 10) + separatorTime
+            + rtnStr.substring(10, 12) + separatorTime
+            + rtnStr.substring(12, 14);
+    } else if (rtnStr.length >= 12) {
+        rtnStr = rtnStr.substring(0, 4) + separatorDate
+            + rtnStr.substring(4, 6) + separatorDate + rtnStr.substring(6, 8)
+            + " " + rtnStr.substring(8, 10) + separatorTime
+            + rtnStr.substring(10, 12);
+    } else if (rtnStr.length >= 10) {
+        rtnStr = rtnStr.substring(0, 4) + separatorDate
+            + rtnStr.substring(4, 6) + separatorDate + rtnStr.substring(6, 8)
+            + " " + rtnStr.substring(8, 10);
+    } else if (rtnStr.length >= 8) {
+        rtnStr = rtnStr.substring(0, 4) + separatorDate
+            + rtnStr.substring(4, 6) + separatorDate + rtnStr.substring(6, 8);
+    } else if (rtnStr.length > 6) {
+        rtnStr = rtnStr.substring(0, 4) + separatorDate
+            + rtnStr.substring(4, 6);
+    } else if (rtnStr.length > 4) {
+        rtnStr = rtnStr.substring(0, 4);
+    }
+
+    return rtnStr;
+}
