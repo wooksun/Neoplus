@@ -1,0 +1,44 @@
+/*
+	날짜 변환처리
+	cfnDashDate(날짜문자열)
+	ex) cfnDashDate('20200101') -> 2020-01-01
+	    cfnDashDate('20200101', '.') -> 2020.01.01
+/*/
+function cfnDashDate(strValue, strDateMark) {
+    var strResult = "";
+    var strDate = strValue;
+    if ($.isEmpty(strDateMark)) {
+        strDateMark = "-";
+    }
+
+    if ($.isEmpty(strDate)) {
+        return strResult;
+    }
+
+    if(strDate.indexOf("-") > -1){
+        strDate = strDate.replace(/-/gi,'');
+    }
+
+    var yy = '';
+    var mm = '';
+    var dd = '';
+
+    if(strDate.length >= 4) {
+    	yy = strDate.substring(0,4);
+    }
+    if(strDate.length >= 6) {
+    	mm = strDate.substring(4,6);
+    }
+    if(strDate.length >= 8) {
+    	dd = strDate.substring(6,8);
+    }
+    if(strDate.length == 6) {
+      strResult = yy + strDateMark + mm;
+    } else if(strDate.length == 8) {
+      strResult = yy + strDateMark + mm + strDateMark + dd;
+    } else if(strDate.length > 8){
+      strResult = yy + strDateMark + mm + strDateMark + dd;
+    }
+
+     return strResult;
+}
