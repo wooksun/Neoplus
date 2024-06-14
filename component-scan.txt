@@ -1,0 +1,43 @@
+<출처>
+https://velog.io/@hyun-jii/%EC%8A%A4%ED%94%84%EB%A7%81-component-scan-%EA%B0%9C%EB%85%90-%EB%B0%8F-%EB%8F%99%EC%9E%91-%EA%B3%BC%EC%A0%95
+
+<component-scan>
+component-scan이란? 빈으로 등록 될 준비를 마친 클래스들을 스캔하여, 빈으로 등록해주는 것.
+-> @Controller, @Service, @Component, @Repository 어노테이션을 붙인 클래스들이 빈으로 등록 될 준비를 한 것이다.
+
+component-scan은 기본적으로 @Component 어노테이션을 빈 등록 대상으로 포함한다.
+-> 왜냐하면 @Controller나 @Service가 @Component를 포함하고 있기 때문이다.
+
+<component-scan 사용방법>
+(1) xml 파일에 설정
+<context:component-scan base-package="com.rcod.lifelog"/>
+-> 위와 같이 xml 파일에 설정하고, base-package를 적어주면 base-package를 기준으로 클래스들을 스캔하여 빈으로 등록한다.
+
+<context:component-scan base-package="com.rcod.lifelog, com.rcod.example"/>과 같이 여러개의 패키지를 쓸 수 있다.
+-> 위와 같이 설정하면 base-package 하위의 @Controller, @Service, @Repository, @Component 클래스가 모두 빈으로 등록되므로, 특정한 객체만 빈으로
+등록하여 사용하고 싶다면 'include-filter'나 'exclude-filter'를 통해 설정할 수 있다.
+
+- exclude-filter
+<context:component-scan base-package="com.rcod.lifelog">
+    <context:exclude-filter type="annotation" 
+        expression="org.springframework.stereotype.Controller"/>
+</context:component-scan>
+-> @Controller 를 제외하고 싶다면 위와 같이 exclude-filter를 사용하여 org.springframework.stereotype.Controller를 명시해준다.
+
+- include-filter
+<context:component-scan base-package="com.rcod.lifelog" use-default="false">
+    <context:include-filter type="annotation" 
+        expression="org.springframework.stereotype.Controller"/>
+</context:component-scan>
+
+-> use-default="false"는 기본 어노테이션 @Controller, @Component등을 스캔하지 않는다는 것이다.
+
+(2) 자바 파일 안에서 설정
+@Configuration
+@ComponentScan(basePackages = "com.rcod.lifelog")
+public class ApplicationConfig {
+}
+
+-> @Configuration 은 이 클래스가 xml을 대체하는 설정 파일임을 알려준다.
+해당 클래스를 설정 파일로 설정하고 @ComponentScan을 통하여
+basePackages를 설정해준다.
