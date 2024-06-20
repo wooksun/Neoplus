@@ -41,3 +41,18 @@ public class ApplicationConfig {
 -> @Configuration 은 이 클래스가 xml을 대체하는 설정 파일임을 알려준다.
 해당 클래스를 설정 파일로 설정하고 @ComponentScan을 통하여
 basePackages를 설정해준다.
+
+<component-scan 동작 과정>
+ConfigurationClassParser 가 Configuration 클래스를 파싱한다.
+@Configuration 어노테이션 클래스를 파싱하는 것이다.
+                   ⬇
+ComponentScan 설정을 파싱한다.
+base-package 에 설정한 패키지를 기준으로
+ComponentScanAnnotationParser가 스캔하기 위한 설정을 파싱한다.
+                   ⬇
+base-package 설정을 바탕으로 모든 클래스를 로딩한다.
+                   ⬇
+ClassLoader가 로딩한 클래스들을 BeanDefinition으로 정의한다.
+생성할 빈의 대한 정의를 하는 것이다.
+                   ⬇
+생성할 빈에 대한 정의를 토대로 빈을 생성한다.
