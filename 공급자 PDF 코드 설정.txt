@@ -1,0 +1,22 @@
+<공급자 PDF 코드 설정>
+1. openPDF 사용 시
+- KIPS_CONFIRM > pom.xml > ctrl + F = 'itextpdf' 검색 > 291 ~ 341번줄(itext의 <dependency>) 주석 처리
+- KIPS_CONFIRM.cmmn > src > main > java > com > kr > sds > cmmn > utils > PdfUtil.java 클릭 > 'convertHtmlToPdf()' 내용 주석 처리
+- pdf 다운로드 하는 .jsp 파일(usr, cmmn, adm) search > 해당하는 다운로드 경로를 Controller 참조하여 'openPdfDownload.do?' 형태로 표기 > 컨트롤러 조회하여 주소 참조
+
+2. ITEXT PDF 사용 시
+- KIPS_CONFIRM > pom.xml > ctrl + F = 'itextpdf' 검색 > 291 ~ 341번줄(itext의 <dependency>) 주석 처리 되어있다면 해제
+- KIPS_CONFIRM.cmmn > src > main > java > com > kr > sds > cmmn > utils > PdfUtil.java 클릭 > 'convertHtmlToPdf()' 내용 주석 처리되어 있다면 해제
+- pdf 다운로드 하는 .jsp 파일(usr, cmmn, adm) search > 해당하는 다운로드 경로를 Controller 참조하여 'pdfDownload.do?' 형태로 표기 > 컨트롤러 조회하여 주소 참조
+
+※ usr의 경우 ※
+증명서 다운로드가 18호 서식(신고내역)과 19호 서식(변경신고)으로 나누어져 있기 때문에, 다운로드하는 경로가 다르다.
+KIPS_CONFIRM.usr > src > main > java > com > kr > sds > usr > sttemntDtls > web > SttemntDtlsController.java
+18호 서식 openPDF =  'openPdfDownload18.do'
+18호 서식 ITEXT PDF = 'pdfDownload18.do'
+19호 서식 openPDF = 'openPdfDownload19.do'
+19호 서식 ITEXT PDF = 'pdfDownload19.do'
+
+3. ITEXT PDF일 때, if("REAL".equals(systemMachine))에서 systemMachine이 REAL인지 아닌지 비교하는 조건문
+KIPS_CONFIRM.usr > src > main > java > com > kr > sds > usr > sttemntDtls > web > SttemntDtlsController.java > if("REAL".equals(systemMachine))
+-> systemMachine이 REAL이면 운영이고, 아니면(esle) 개발도는 로직
