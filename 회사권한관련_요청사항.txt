@@ -1,0 +1,33 @@
+1. 발급번호 'KPSA-'로 시작하는 신청건들이 조회 되지 않는다.
+2. 업체명은 '주식회사 에이루트' / 21년 4월 26일자로 제이스테판 > 에이루트로 회사면 변경
+3. 관리자 페이지에서 신고건수 수량은 동일하지만, 사용자 계정에서는 조회가 되지 않는다.
+==============================================================
+1.1 관리자 페이지에 해당되는 회사 검색 > 회사 신고내역상세 > 사업자등록번호 복사 > 다시 목록에서 사업자등록번호 검색
+1.2 회사명으로 검색했을 땐 보이지 않았던 정보가 모두 나옴 > 왜냐하면 회사 IDX를 참조하지 못하는 신고건은 회사이름을 검색했을 때 조회되지 않음
+1.3 DB에 사업자 번호를 조회하여 회사 SttemntDtls를 출력 > 회사 IDX(CMPNY_IDX)는 '4'가 조회 됨.
+1.4 회사 IDX를 통해 사용자 검색하는 쿼리 실행 > 사용자 IDX는 '4524'
+1.5 사용자 IDX를 통해 회사 권한 여부 확인(권한없음=0) > CMPNY_AUTHOR_AT(회사권한여부)가 1이 나옴
+1.6 'KPSA'로 시작하는 아무 신고건 조회 (1.2와 같이 조회하여 나온 신고내역 중, 발급번호가 'KPSA'로 시작하는 신고 아무거나)
+1.7 해당 신고에 접수번호 0000-0000000 '-'뒷자리를 복사하여 신고건 조회 쿼리 실행
+1.8 기존 사이트 데이터 테이블에서 IDX값 조회 시, 작성자 (writer)값 null 확인 > 작성자가 null임
+	=> 해당 건은 회사 권한이 없어서 나타난 오류
+	=> 해당 회사에 전화하여 "회사권한부여"하는 방법 전달
+
+-- 회사 정보 조회
+SELECT * 
+FROM tb_sttemnt_dtls tsd 
+INNER JOIN tb_user_cmpny tuc 
+ON tsd.CMPNY_IDX = tuc.CMPNY_IDX
+ WHERE tsd.STTEMNT_CMPNY_NM ='주식회사 에이루트';
+
+-- 회사권한 조회
+SELECT um.CMPNY_AUTHOR_AT 
+FROM tb_user_mber um 
+INNER JOIN tb_sttemnt_dtls tsd 
+ON um.USER_IDX = tsd.USER_IDX 
+WHERE tsd.STTEMNT_CMPNY_NM ='주식회사 에이루트';
+
+	=> 이 쿼리는 좋은 접근 X => 회사명을 바꿨기 때문에 이 전 데이터가 안나올 수 있다.
+
+로그 보는 방법: KIPS_CONFIRM.usr > src > main > resources > dev(개발) / real(운영) > log4j2.xml > <property name="log-path">의 주소를 참조
+MobaXterm의 운영서버(10.10.100.97) 접속 > xml에서 참조한 주소를 콘솔창이 아닌 주소창에 붙여넣어 검색 > 로그 접속시간 비교하여 쿼리문 찾기
