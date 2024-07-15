@@ -1,0 +1,108 @@
+<중복로그인, 2시간 후 로그아웃 주석>
+	/**
+	 * <PRE>
+	 * 1. MethodName	: selectSessionId
+	 * 2. ClassName		: SessionLogServiceImpl
+	 * 3. Author		: 조민식
+	 * 4. Creation Date	: 2024. 5. 8. 오후 5:15:34
+	 * 5. Comment		: 세션 로그 조회 후 로그인 세션과 비교
+	 * </PRE>
+	 * @return
+	 */
+	@Override
+	public String selectSessionId() {
+		String chkSessionVal = "03";
+
+		String domainUrl= CmmnUtils.getServerDomain();
+
+		// 중복체크 제외 대상확인 (유지보수용)
+		//if (!this.chkPassUserId()) {
+			// 로컬에서 중복체크 제외
+			//if (domainUrl.indexOf("localhost") == -1) {
+				String userIdx = this.getUserIdx();
+				if (EgovStringUtil.isNotEmpty(userIdx)) {
+					TB_SESION_LOG tbSesionLog = new TB_SESION_LOG();
+					tbSesionLog.setUserIdx(userIdx);
+					SessionVO SessionVO = sessionLogMapper.selectSessionId(tbSesionLog);
+					String srchSessionId = SessionVO.getSesionId();
+					// SesionYn 01 인경우 로그인한지 2시간이 지난경우 02아닌경우
+					String srchSesionYn = SessionVO.getSesionYn();
+
+					if (EgovStringUtil.isNotEmpty(srchSessionId)) {
+						String sessionId = (String) SessionUtil.getAttribute("idKey");
+
+						if(StringUtils.isNotBlank(sessionId)) {
+							// 중복로그인
+							if (!srchSessionId.equals(sessionId)) {
+								tbSesionLog.setSesionId(sessionId);
+								sessionLogMapper.deleteSessionLog(tbSesionLog);
+								chkSessionVal = "01";
+							// 2시간 지난경우
+							} else if ("01".equals(srchSesionYn)){
+								sessionLogMapper.deleteSessionLog(tbSesionLog);
+								chkSessionVal = "02";
+							}else {
+								sessionLogMapper.updateSessionLog(tbSesionLog);
+							}
+						}
+					}
+				}
+			//}
+		//}
+		return chkSessionVal;
+	}
+
+===============================================================================
+<중복로그인, 2시간 후 로그아웃 주석해제>
+	/**
+	 * <PRE>
+	 * 1. MethodName	: selectSessionId
+	 * 2. ClassName		: SessionLogServiceImpl
+	 * 3. Author		: 조민식
+	 * 4. Creation Date	: 2024. 5. 8. 오후 5:15:34
+	 * 5. Comment		: 세션 로그 조회 후 로그인 세션과 비교
+	 * </PRE>
+	 * @return
+	 */
+	@Override
+	public String selectSessionId() {
+		String chkSessionVal = "03";
+
+		String domainUrl= CmmnUtils.getServerDomain();
+
+		// 중복체크 제외 대상확인 (유지보수용)
+		if (!this.chkPassUserId()) {
+			// 로컬에서 중복체크 제외
+			if (domainUrl.indexOf("localhost") == -1) {
+				String userIdx = this.getUserIdx();
+				if (EgovStringUtil.isNotEmpty(userIdx)) {
+					TB_SESION_LOG tbSesionLog = new TB_SESION_LOG();
+					tbSesionLog.setUserIdx(userIdx);
+					SessionVO SessionVO = sessionLogMapper.selectSessionId(tbSesionLog);
+					String srchSessionId = SessionVO.getSesionId();
+					// SesionYn 01 인경우 로그인한지 2시간이 지난경우 02아닌경우
+					String srchSesionYn = SessionVO.getSesionYn();
+
+					if (EgovStringUtil.isNotEmpty(srchSessionId)) {
+						String sessionId = (String) SessionUtil.getAttribute("idKey");
+
+						if(StringUtils.isNotBlank(sessionId)) {
+							// 중복로그인
+							if (!srchSessionId.equals(sessionId)) {
+								tbSesionLog.setSesionId(sessionId);
+								sessionLogMapper.deleteSessionLog(tbSesionLog);
+								chkSessionVal = "01";
+							// 2시간 지난경우
+							} else if ("01".equals(srchSesionYn)){
+								sessionLogMapper.deleteSessionLog(tbSesionLog);
+								chkSessionVal = "02";
+							}else {
+								sessionLogMapper.updateSessionLog(tbSesionLog);
+							}
+						}
+					}
+				}
+			}
+		}
+		return chkSessionVal;
+	}
