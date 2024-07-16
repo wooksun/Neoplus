@@ -1,0 +1,91 @@
+<공급자 반려사유>
+- JSP -
+1.  value="${list.returnPrvonsh} = list.반려사유 
+	=> value="${list.sn}" = list.순번으로 수정하여 param(파라미터) 값을 "순번"으로 한다.
+
+2. fnOpenModal(returnPrvonsh) 에서 fnOpenModal(sn) var params = {"sn" : sn}; 으로 수정한다. 
+	=> 파라미터로 넘기는 값을 returnPrvonsh에서 sn으로 수정했기 때문이다.
+
+- Controller - 
+1. JSP로부터 sn이라는 파라미터 값을 받아야 한다.
+
+2. 현재 유저 세션을 담는 UsrSessionVO sessionVO = UsrSessionUtil.getSesson(); 객체를 생성한다.
+
+3. if (sessionVO != null) 만약 세션이 null이 아니라면, groupAuthorVO.setUserIdx(sessionVO.getUser().getUserIdx());
+	=> 사용자 세션이 담긴 sessionVO의 userIdx를 groupAuthorVO에 담아준다.
+	=> groupAuthorVO는 반려사유가 담긴 '테이블'을 상속하는 VO이면서, userIdx와 sn을 PK(기본키)로 갖는 VO이다.
+
+4. GroupAuthorRequstVO (반려사유, 순번, userIdx를 가진 VO) detailVO = authorRequstService.selectAuthorRequsttDetail(groupAuthorVO);
+	=> detailVO 객체를 선언하고, 사용자의 세션이 담긴 groupAuthorVO는 selectAuthorRequsttDetail이라는 이름의 서비스에 파라미터로 담아 넘어간다.
+
+- AuthorRequstService (서비스) -
+1. public GroupAuthorRequstVO selectAuthorRequsttDetail(GroupAuthorRequstVO searchVO) throws Exception;
+	=> 컨트롤러로부터 생성된 selectAuthorRequsttDetail는 컨트롤러의 'GroupAuthorRequstVO detailVO'로 담기기 때문에 GroupAuthorRequstVO로 시작
+	=> ( )안에는 파라미터로 넘겨줄 VO 즉, GroupAuthorRequstVO searchVO를 넣어준다.
+
+- AuthorRequstServiceImpl (Impl) -
+@Override
+	public GroupAuthorRequstVO selectAuthorRequsttDetail(GroupAuthorRequstVO searchVO) throws Exception {
+		return authorRequstMapper.selectAuthorRequsttDetail(searchVO);
+	}
+
+1. Impl은 return 해주는 부분만 변경하면 된다. 생성과 동시에 service와 같이 코딩되기 때문.
+	=> authorRequstMapper에 selectAuthorRequsttDetail(searchVO)를 추가해준다.
+
+- AuthorRequstMapper (Mapper) -
+public GroupAuthorRequstVO selectAuthorRequsttDetail(GroupAuthorRequstVO searchVO) throws Exception;
+
+1. 파라미터로 VO를 전달하기 때문에, Controller와 Service, ServiceImpl에서 사용한 selectAuthorRequsttDetail에 (GroupAuthorRequstVO searchVO)를 전달한다.
+
+- AuthorRequst_SQL.xml (xml) -
+<select id="selectAuthorRequsttDetail" parameterType="com.kr.sds.usr.authorRequst.vo.GroupAuthorRequstVO" 	resultType="com.kr.sds.usr.authorRequst.vo.GroupAuthorRequstVO">
+		SELECT /*+com.kr.sds.usr.authorRequst.mapper.AuthorRequstMapper.selectAuthorRequsttDetail*/
+			 USER_IDX
+			,SN
+			,RETURN_PRVONSH
+		FROM TB_GROUP_AUTHOR_REQUST
+		WHERE USER_IDX = #{userIdx}
+		AND SN = #{sn}
+</select>
+
+1. parameterType으로 강조해온 GroupAuthorRequstVO의 위치를 기입한다. return 받을 타입으로 resultType의 VO를 GroupAuthorRequstVO로 기입한다.
+
+2. 조회는 PK로 갖는 USER_IDX SN / 반려사유 내용을 가지는 RETURN_PRVONSH만 조회한다.
+
+3. 시퀀스인 userIdx와 파라미터 값인 sn을 조건절에 넣어준다.
+
+- Controller - 
+if(detailVO != null) {
+	model.addAttribute("returnPrvonsh", detailVO.getReturnPrvonsh()); // 설정한 순번(userIdx가 담긴)에 "returnPrvonsh"
+}
+
+1. detailVO = authorRequstService.selectAuthorRequsttDetail(groupAuthorVO); 에서 쿼리를 돌고온 값이 detailVO에 저장되었다.
+
+2. detailVO가 xml을 타고 조회됐으니 null인지 체크한다.
+
+3. null이 아니면 detailVO의 조회내용 중 RETURN_PRVONSH를 가져온다. => detailVO.getReturnPrvonsh()
+
+4. 그 값을 "returnPrvonsh"라는 내용의 파라미터?로 전달한다.
+
+5. return "none.authorRequst.pop.authorRequst_pop_list"; 의 주소로
+
+- authorRequst_pop_list.jsp - 
+1. 최종적으로 반려사유 POP-UP창에 내용은 <c:out value="${returnPrvonsh}"/> 형태로 입력되어 사용자에게 알맞게 출력된다.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
