@@ -16,9 +16,9 @@
 		String domainUrl= CmmnUtils.getServerDomain();
 
 		// 중복체크 제외 대상확인 (유지보수용)
-		//if (!this.chkPassUserId()) {
+		//if (!this.chkPassUserId()) { => chkPassUserId()는 "admin", "neoplus"인지 판단하는 구문임. 따라서 관리자 계정 유무 판단하는 코드
 			// 로컬에서 중복체크 제외
-			//if (domainUrl.indexOf("localhost") == -1) {
+			//if (domainUrl.indexOf("localhost") == -1) { => indexOf() == -1은 값이 없다는 뜻. 따라서 url에 'localhost'가 없다면
 				String userIdx = this.getUserIdx();
 				if (EgovStringUtil.isNotEmpty(userIdx)) {
 					TB_SESION_LOG tbSesionLog = new TB_SESION_LOG();
