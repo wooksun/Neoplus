@@ -1,0 +1,80 @@
+<파라미터 값 변경하여 DB로 값 조회>
+- authorRequst_list.jsp
+1. <button type="button" class="edit" onClick="fnOpenModal('<c:out value="${list.returnPrvonsh}" />')">반려사유</button>로 되어있던 파라미터를
+	=> '<c:out value="${list.sn}" />'으로 변경하여 반려사유(returnPrvonsh)를 파라미터로 넘기지 않고, 순번(sn)을 파라미터로 넘긴다.
+	=> 해당 순번의 변경사유를 시퀀스로 잡으면 되기 때문이다.
+
+2. 파라미터로 넘기는 순번(sn)을 넘긴다.
+/* 반려사유 */
+function fnOpenModal(sn) {
+	var params = {
+			"sn" : sn
+	};
+	openMoadal("/authorRequst/selectReturnPrvonsh.do", params, "반려사유", 350, 200);
+}
+
+AuthorRequstController.java
+3. 
+/**
+	 * <PRE>
+	 * 1. MethodName	: selectReturnPrvonsh
+	 * 2. ClassName		: AuthorRequstController
+	 * 3. Author		: 진희경
+	 * 4. Creation Date	: 2024. 5. 16. 오후 9:02:29
+	 * 5. Comment		: 반려사유 확인 모달 팝업
+	 * </PRE>
+	 * @param model
+	 * @param groupAuthorVO
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping(value="/selectReturnPrvonsh.do")
+	public String selectReturnPrvonsh(ModelMap model, @RequestBody GroupAuthorRequstVO groupAuthorVO) throws Exception {
+		LOGGER.debug("#################### 반려사유 테스트 ... ");
+
+		UsrSessionVO sessionVO = UsrSessionUtil.getSesson(); // 유저 세션
+
+		if (sessionVO != null) { // 세션이 있으면
+			groupAuthorVO.setUserIdx(sessionVO.getUser().getUserIdx()); // user의 시퀀스 => groupAuthorVO에 담김
+		}
+
+		GroupAuthorRequstVO detailVO = authorRequstService.selectAuthorRequsttDetail(groupAuthorVO);
+
+		if(detailVO != null) {
+			model.addAttribute("returnPrvonsh", detailVO.getReturnPrvonsh()); // 설정한 순번(userIdx가 담긴)에 "returnPrvonsh"
+		}
+		return "none.authorRequst.pop.authorRequst_pop_list";
+	}
+}
+
+4. SQL
+<select id="selectAuthorRequsttDetail" parameterType="com.kr.sds.usr.authorRequst.vo.GroupAuthorRequstVO" resultType="com.kr.sds.usr.authorRequst.vo.GroupAuthorRequstVO">
+	SELECT /*+com.kr.sds.usr.authorRequst.mapper.AuthorRequstMapper.selectAuthorRequsttDetail*/
+		 USER_IDX
+		,SN
+		,RETURN_PRVONSH
+	FROM TB_GROUP_AUTHOR_REQUST
+	WHERE USER_IDX = #{userIdx}
+	AND SN = #{sn}
+</select>
+
+Controller	=> 2번에서 보내는 주소인 'selectReturnPrvonsh.do'로 받는다. 
+	=> 지금 필요한건 반려사유를 식별할 userIdx와 해당 반려사유를 판별할 순번(sn) 두개의 시퀀스 그리고, 반려사유(returnPrvonsh)의 내용이 필요하다.
+	=> 세 개의 값을 모두 포함하고있는 GroupAuthorRequstVO가 중요하다. 
+	=> 먼저 로그인 된 사용자의 세션을 판별하기 위해 UsrSessionVO sessionVO = UsrSessionUtil.getSesson();을 선언하여 사용자의 세션값을 담는다.
+	=> null 체크를 통해 null이 아니라면 세션이 담긴 sessionVO의 userIdx를 가져와 groupAuthorVO의 userIdx에 담는다.
+	=> authorRequstService.selectAuthorRequsttDetail(groupAuthorVO);를 통해 사용자의 userIdx가 담긴 groupAuthorVO를 담아 mapper로 전달된다.
+	
+Mapper	=>  id="selectAuthorRequsttDetail"(컨트롤러로부터 보내진 이름) 
+	=> parameterType="com.kr.sds.usr.authorRequst.vo.GroupAuthorRequstVO"는 전달받는 파라미터의 타입을 말한다.
+	=> resultType="com.kr.sds.usr.authorRequst.vo.GroupAuthorRequstVO"는 조회된 쿼리 값을 전달받을 타입을 말한다.
+	=> SELECT USER_IDX, SN, RETURN_PRVONSH에서 userIdx와 sn은 사용자와 해당 반려사유를 식별할 시퀀스, returnPrvonsh는 반려사유의 내용이다.
+	=> WHERE USER_IDX = #{userIdx}는 사용자를 식별할 userIdx와 AND SN = #{sn} 해당 '번째'의 반려사유를 식별할 순번을 조회한다.
+
+Controller	=> GroupAuthorRequstVO detailVO = authorRequstService.selectAuthorRequsttDetail(groupAuthorVO); 조회된 값이 detialVO에 담겨있다.
+	=> 조회 된 값이 저장된 detialVO를 null 체크하여 null이 아니라면 조건문을 실행한다.
+	=> model.addAttribute("returnPrvonsh", detailVO.getReturnPrvonsh());로 "returnPrvonsh"라는 곳에 조회된 detailVO.getReturnPrvonsh() 반려사유의 값을 보냄
+	=> return "none.authorRequst.pop.authorRequst_pop_list"; 을 통해 authorRequst_pop_list.jsp로 값이 전달된다.
+
+5. <textarea rows="3" cols="100" class="attach_cont disabled wd_98" readonly style="resize: none;"><c:out value="${returnPrvonsh}"/></textarea>
+	=> <c:out value="${returnPrvonsh}"/> 에서 조회된 'returnPrvonsh'의 값이 전달되어 화면에 출력된다.
