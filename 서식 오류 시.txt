@@ -1,0 +1,9 @@
+<서식 오류 시>
+- 서식 오류 시간대 찾아 log를 파악한다. (log가 담긴 파일에서 "grep -i "필요단어" 파일이름" 형태로 로그 출력) 
+- log에서 userIdx나 id, ip를 찾아 오류나는 부분을 찾고, 오류 문구에서 'sttemntDtlsIdx'를 찾는다.
+- 해당 sttemntDtlsIdx를 찾았다면, 공급자 관리자 페이지에서 sttemntDtlsIdx번째 신고글을 찾는다.
+- sttemntDtlsIdx번째 신고글의 문제는 대부분 제조업자의 이름, 주소로 인해 발생되기 때문에 제조업자의 이름과 주소의 문제가 없는지 찾는다.
+- 문제의 정보를 발견하면 복사하여 올바르게 정보를 수정한 후, 공급자 샘플목록(관리자) 사이트에서 올바른 정보를 암호화한다.
+- DB에서 'SELECT * FROM tb_sttemnt_cmpny_info WHERE STTEMNT_DTLS_IDX = ?'를 조회 => 해당 idx 번째의 문제 정보(이름, 주소 등)에 
+암호화 시킨 정보를 새로 저장시키고 커밋(commit)한다.
+- 관리자 사이트에서 해당 sttemntDtlsIdx번째 신고글을 새로고침하여 서식이 잘 다운로드 되는지 확인한다.
