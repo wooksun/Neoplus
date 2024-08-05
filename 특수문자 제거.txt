@@ -1,0 +1,14 @@
+<특수문자 제거>
+<script>
+	function fnRemoveSpecialCharacter(input) {
+	    // 특수문자와 공백을 제거하는 정규식
+	    var regex = /[^a-zA-Z0-9가-힣\s\(\)\,\.㈜&'.,\-·]/g;
+	    // 입력 필드의 값에서 특수문자 제거
+    	input.value = input.value.replace(regex, '');
+	    console.log(input.value);
+	}
+</script>
+=> script에서 fnRemoveSpecialCharacter(input)을 사용.
+
+jsp 본문에서 사용하는 <form:input> 태그에 oninput="fnRemoveSpecialCharacter(this)"로 사용해주면
+jsp 뷰페이지에서 스크립트가 사용되어 작성하고자 하는 form태그의 특수문자가 작성되지 않는다.
