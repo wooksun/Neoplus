@@ -1,0 +1,94 @@
+// 상태코드 라디오에 따른 text 변경
+		$('input[name="chkMfbizer"]').change(function() {
+			// 체크된 라디오 버튼의 값을 가져옵니다.
+			//var selectVal = $('input[name="progrsSttusCode"]:checked').val();
+	 		console.log("test");
+	 		console.log("test");
+	 		console.log("test");
+	 		$("#cmNmMfbAfterTxt").val("");
+	 		console.log("test");
+		});
+
+=> 체크박스가 해제될 때, cmNmMfbAfterTxt의 값을 지우는 코드를 주임님께서 보내주셨다.
+회사명과 주소의 변경 후 값을 체크박스 해제 시 초기화하는 작업에 사용하는데, 이 작업의 예시로 사용하였다. 
+다른 방법을 구현해보자.
+
+위와 같이 적용하니, 모든 확인자와 제조업자 체크박스의 name이 같아서 확인자 체크박스를 해제하면 모든 확인자 체크박스가 해제되어 값이 빈 값이 되고,
+제조업자를 해제하면 제조업자의 값이 모두 빈 값이 되었다.
+
+====================================================================
+<common.jsp>
+// 회사명, 주소 변경 시, 체크박스 값 초기값 설정
+// 초기화에 필요한 필드들의 초기값을 저장하는 객체
+var initialValues = {};
+function setInitialValues(values) {
+    initialValues = values;
+}
+// 체크박스가 해제될 때, 관련 필드 초기화
+function resetFieldsOnUncheck(id, relatedFields) {
+    relatedFields.forEach(function(field) {
+        var fieldId = field.substring(1); // '#필드ID'에서 필드ID를 추출
+        $("#" + fieldId).val(initialValues[fieldId]); // 초기값으로 재설정
+        console.log("체크박스가 해제될 때, 관련 필드 초기화");
+    });
+}
+
+<변경 관련 jsp>
+$(document).ready(function() {
+		/* 체크박스 해제 값 초기화 */
+		// 기본값을 저장할 객체
+	  	var initialValues = {
+	        cmCnfrAfterTxt: $("#cmCnfrAfterTxt").val(),
+	        cmNmMfbAfterTxt: $("#cmNmMfbAfterTxt").val(),
+	        adresCnfrAfterDetailAdres: $("#adresCnfrAfterDetailAdres").val(),
+	        adresMfbAfterDetailAdres: $("#adresMfbAfterDetailAdres").val()
+	    };
+
+	 	// 초기값을 common.js의 함수로 설정
+	    setInitialValues(initialValues);
+
+	 	// 회사명 변경 확인자
+	    $("#cmpnyNmCnfrmner").change(function() {
+	        if (!$(this).is(':checked')) {
+	            // 확인자 회사명 변경 필드 초기화
+	            resetFieldsOnUncheck('cmpnyNmChk', ['#cmCnfrAfterTxt']);
+	            // 확인자 체크박스 해제
+	            $("#cmpnyNmCnfrmner").prop("checked", false);
+	        }
+	    });
+
+	 	//	회사명 변경 제조업자
+	    $("#cmpnyNmMfbizer").change(function() {
+	        if (!$(this).is(':checked')) {
+	            // 제조업자 회사명 변경 필드 초기화
+	            resetFieldsOnUncheck('cmpnyNmChk', ['#cmNmMfbAfterTxt']);
+	            // 제조업자 체크박스 해제
+	            $("#cmpnyNmMfbizer").prop("checked", false);
+	        }
+	    });
+
+	 	// 주소 변경 확인자
+	    $("#adresCnfrmner").change(function() {
+	        if (!$(this).is(':checked')) {
+	            // 확인자 주소 변경 필드 초기화
+	            resetFieldsOnUncheck('adresChk', ['#adresCnfrAfterDetailAdres']);
+	            // 확인자 체크박스 해제
+	            $("#adresCnfrAfterDetailAdres").prop("checked", false);
+	        }
+	    });
+
+	 	// 주소 변경 제조업자
+	    $("#adresMfbizer").change(function() {
+	        if (!$(this).is(':checked')) {
+	            // 제조업자 주소 변경 필드 초기화
+	            resetFieldsOnUncheck('adresChk', ['#adresMfbAfterDetailAdres']);
+	            // 제조업자 체크박스 해제
+	            $("#adresMfbAfterDetailAdres").prop("checked", false);
+	        }
+	    });
+	});
+
+=> 각 jsp에서 사용할 id를 가져와 객체를 선언하고, (setInitialValues(initialValues);) common.js에서 사용되는 함수를 설정한다.
+그리고 객체로 선언한 id들을 .change하여 값을 초기화한다.
+
+=> 결과는, 사용할 id를 change하여 해당 id들이 common.js에 선언된 함수 resetFieldsOnUncheck를 통하여 값이 초기화 된다.
