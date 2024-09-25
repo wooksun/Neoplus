@@ -1,0 +1,15 @@
+-- 월 평균 이용자 수(로그인하여 홈페이지에 도달하는 시점의 접속자)
+   SELECT
+    DATE_FORMAT(REGIST_DE, '%Y-%m') AS 년월일,
+    COUNT(DISTINCT REGIST_IDX) AS 월평균이용자수 
+FROM 
+    tb_conectr_info
+WHERE 
+    REFERER_URL LIKE '%/login/proc.do'
+    AND CONECION_ATMPT_URL LIKE '%sttemntDtls/list.do'
+    AND REGIST_DE >= '2024-05-14'
+    AND CONECTR_SE_CODE = 1
+GROUP BY 
+    년월일
+ORDER BY 
+    년월일;
