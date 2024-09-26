@@ -1,0 +1,16 @@
+공급자 파일 업로드 허용 관련
+
+공급자 파일 업로드 시에 허용 불가능한 파일이 업로드 되어 alert이 뜬다면?
+
+-> KIPS_CONFIRM.cmmn -> 'system.properties' 
+-> # 업로드 허용 Minetype, 확장자
+UPLOAD.IMG.TYPE	= image/bmp,image/gif,image/svg+xml,image/png,image/jpeg,image/tif,image/tiff
+UPLOAD.IMG.EXT	= bmp, gif, svg, png, jpg, jpeg, tif, tiff
+UPLOAD.DOC.TYPE	= application/vnd.hancom.hwp,application/haansofthwp,application/haansoftdocx,application/x-hwp,application/vnd.hancom.hwpx,application/haansofthwpx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/pdf,application/haansoftpdf,application/haansoftxlsx
+UPLOAD.DOC.EXT	= hwp, hwpx, doc, docx, xls, xlsx, ppt, pptx, pdf
+UPLOAD.ZIP.TYPE	= application/zip,application/x-zip-compressed
+UPLOAD.ZIP.EXT	= zip, zip
+
+ex) 마이크로소프트 계정에서 한컴을 설치한 후, 엑셀 파일을 업로드 했는데 오류가 발생했다.
+해당 오류는 UPLOAD.DOC.TYPE에 'application/haansoftxlsx'이 없었기 때문이었다.
+따라서 UPLOAD.DOC.TYPE에 application/haansoftxlsx를 추가하였다.
